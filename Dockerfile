@@ -29,6 +29,7 @@ COPY mvIMPACT_Acquire/mvGenTL_Acquire-x86_64_ABI2-2.45.0.tgz /var/lib/mvIMPACT_A
 
 # execute the setup script in an unattended mode
 RUN cd /var/lib/mvIMPACT_Acquire
-RUN chmod a+x ./install_mvGenTL_Acquire.sh
-RUN sudo ./install_mvGenTL_Acquire.sh -u  
+RUN ls /var/lib/mvIMPACT_Acquire
+RUN chmod a+x /var/lib/mvIMPACT_Acquire/install_mvGenTL_Acquire.sh
+RUN /var/lib/mvIMPACT_Acquire/install_mvGenTL_Acquire.sh -u  
 RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
