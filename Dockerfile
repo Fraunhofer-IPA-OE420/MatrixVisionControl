@@ -16,10 +16,10 @@ ENV container docker
 
 # update packets and install minimal requirements
 # after installation it will clean apt packet cache
-RUN apt-get update && apt-get -y install build-essential && \
-    iproute2 && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN apt-get update 
+RUN apt-get -y install build-essential iproute2 
+RUN apt-get clean 
+RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # move the directory mvIMPACT_Acquire with *.tgz and *.sh files to the container
 COPY mvIMPACT_Acquire /var/lib/mvIMPACT_Acquire
