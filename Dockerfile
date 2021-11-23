@@ -4,7 +4,7 @@ ENV LC_ALL C
 ENV DEBIAN_FRONTEND noninteractive
 
 # entrypoint of Docker
-#CMD ["/bin/bash"]
+CMD ["/bin/bash"]
 
 # set environment variables
 ENV TERM linux
@@ -28,5 +28,6 @@ COPY mvIMPACT_Acquire/mvGenTL_Acquire-x86_64_ABI2-2.45.0.tgz /var/lib/mvIMPACT_A
 
 # execute the setup script in an unattended mode
 RUN cd /var/lib/mvIMPACT_Acquire 
+RUN ls 
 RUN ./install_mvGenTL_Acquire.sh -u 
 RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
