@@ -14,6 +14,7 @@ ENV GENICAM_GENTL64_PATH /opt/mvIMPACT_Acquire/lib/x86_64
 ENV GENICAM_ROOT /opt/mvIMPACT_Acquire/runtime
 ENV container docker
 
+USER root
 # update packets and install minimal requirements
 # after installation it will clean apt packet cache
 RUN apt-get update 
