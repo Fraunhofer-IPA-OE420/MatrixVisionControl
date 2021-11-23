@@ -4,7 +4,7 @@ ENV LC_ALL C
 ENV DEBIAN_FRONTEND noninteractive
 
 # entrypoint of Docker
-CMD ["/bin/bash"]
+#CMD ["/bin/bash"]
 
 # set environment variables
 ENV TERM linux
