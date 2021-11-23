@@ -23,7 +23,7 @@ RUN apt-get clean
 RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # move the directory mvIMPACT_Acquire with *.tgz and *.sh files to the container
-COPY mvIMPACT_Acquire/install_mvGenTL_Acquire.sh /var/lib/mvIMPACT_AcquiremvIMPACT_Acquire/install_mvGenTL_Acquire.sh
+COPY mvIMPACT_Acquire/install_mvGenTL_Acquire.sh /var/lib/mvIMPACT_Acquire/install_mvGenTL_Acquire.sh
 COPY mvIMPACT_Acquire/mvGenTL_Acquire-x86_64_ABI2-2.45.0.tgz /var/lib/mvIMPACT_Acquire/mvGenTL_Acquire-x86_64_ABI2-2.45.0.tgz
 
 # execute the setup script in an unattended mode
