@@ -27,5 +27,5 @@ COPY mvIMPACT_Acquire/install_mvGenTL_Acquire.sh /var/lib/mvIMPACT_Acquire/insta
 COPY mvIMPACT_Acquire/mvGenTL_Acquire-x86_64_ABI2-2.45.0.tgz /var/lib/mvIMPACT_Acquire/mvGenTL_Acquire-x86_64_ABI2-2.45.0.tgz
 
 # execute the setup script in an unattended mode
-RUN /var/lib/mvIMPACT_Acquire/install_mvGenTL_Acquire.sh -u  
+RUN sudo /var/lib/mvIMPACT_Acquire/install_mvGenTL_Acquire.sh -u  
 RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
