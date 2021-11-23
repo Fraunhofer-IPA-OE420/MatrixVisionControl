@@ -26,6 +26,6 @@ RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 COPY mvIMPACT_Acquire /var/lib/mvIMPACT_Acquire
 
 # execute the setup script in an unattended mode
-RUN cd /var/lib/mvIMPACT_Acquire && \
-    ./install_mvGenTL_Acquire.sh -u && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN cd /var/lib/mvIMPACT_Acquire 
+RUN ./install_mvGenTL_Acquire.sh -u 
+RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
