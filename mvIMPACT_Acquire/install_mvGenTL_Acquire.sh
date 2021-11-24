@@ -1,9 +1,13 @@
 #!/bin/bash
+TARGET=undefined
+TARGET_UNCAPITALIZED=undefined
 DEF_DIRECTORY=/opt/mvIMPACT_Acquire
 DEF_DATA_DIRECTORY=${MVIMPACT_ACQUIRE_DATA_DIR:-/opt/mvIMPACT_Acquire/data}
 PRODUCT=mvGenTL-Acquire
-API=mvIMPACT_acquire
+API=mvIMPACT_Acquire
 TARNAME=mvGenTL_Acquire
+GENICAM_VERSION=3_3
+USER=undefined
 GEV_SUPPORT=undefined
 U3V_SUPPORT=undefined
 PCIE_SUPPORT=undefined
@@ -11,15 +15,18 @@ USE_DEFAULTS=NO
 UNATTENDED_INSTALLATION=NO
 MINIMAL_INSTALLATION=NO
 APT_GET_EXTRA_PARAMS=
+#ARM_ARCHITECTURE="$(uname -m)"
 #OS_NAME="unknown"
 #OS_VERSION="unknown"
 #OS_CODENAME="unknown"
 #KERNEL_VERSION="unknown"
+#JETSON_KERNEL=""
+
+
 
 ##Changes IPA
-
 # get target name: type in bash in raspberry host "uname -m"
-TARGET="ARM64"
+ARM_ARCHITECTUR="ARM64"
 # get kernel version: type in bash in raspberry host "uname -r"
 KERNEL_VERSION="5.10.63-v8+"
 OS_VERSION="11.1"
@@ -27,6 +34,7 @@ OS_NAME="Debian"
 OS_CODENAME="unknown"
 VERSION="2.45.0"
 ######
+
 
 # Define a variable for the ErrorCount and WarningCount and an array for both to summarize the kind of issue
 let ERROR_NUMBER=0
@@ -88,13 +96,17 @@ function check_distro_and_version()
     OS_NAME="Debian"
     OS_VERSION="$(cat /etc/debian_version)"
   fi
-  #KERNEL_VERSION=$(uname -r)
+  KERNEL_VERSION=$(uname -r)
+  JETSON_KERNEL=$(uname -r | grep tegra)
 }    
 
 function createSoftlink {
     if [ ! -e "$1/$2" ]; then
         echo "Error: File "$1/$2" does not exist, softlink cannot be created! "
         exit 1
+    fi
+    if [ -e "$1/$3" ]; then
+        rm -rf "$1/$3" >/dev/null 2>&1
     fi
     if ! [ -L "$1/$3" ]; then
         ln -fs $2 "$1/$3" >/dev/null 2>&1
@@ -159,7 +171,7 @@ while [[ $# -gt 0 ]] ; do
   elif [ "$PATH_EXPECTED" == "YES" ] ; then
     DEF_DIRECTORY=$1
     PATH_EXPECTED=NO
-  elif [[ "$PATH_EXPECTED" == "NO" ]] ; then  
+    elif [[ "$PATH_EXPECTED" == "NO" ]] ; then  
     if [[ ( "$1" == "-ogev" || "$1" == "--only_gev" || "$1" == "-ou3v" || "$1" == "--only_u3v" || "$1" == "-onaos" || "$1" == "--only_naos" ) ]] ; then
       GEV_SUPPORT=FALSE
       U3V_SUPPORT=FALSE
@@ -176,28 +188,28 @@ while [[ $# -gt 0 ]] ; do
       if [[ ( "$1" == "-onaos" || "$1" == "--only_naos" ) ]]; then
           PCIE_SUPPORT=TRUE
       fi
-    elif [[ ( "$1" == "-gev" || "$1" == "--gev_support" || "$1" == "-u3v" || "$1" == "--u3v_support" || "$1" == "-pcie" || "$1" == "--pcie_support" ) ]] ; then
-      if [[ ( "$GEV_SUPPORT" == "undefined" ) ]] ; then
-        GEV_SUPPORT=FALSE
-      fi
-      if [[ ( "$U3V_SUPPORT" == "undefined" ) ]] ; then
-        U3V_SUPPORT=FALSE
-      fi
-      if [[ ( "$PCIE_SUPPORT" == "undefined" ) ]] ; then
-        PCIE_SUPPORT=FALSE
-      fi
-
-      if [[ ( "$1" == "-gev" ) || ( "$1" == "--gev_support" )  ]] ; then
-          GEV_SUPPORT=TRUE
-      fi
-      
-      if [[  ( "$1" == "-u3v" ) || ( "$1" == "--u3v_support" ) ]] ; then
-          U3V_SUPPORT=TRUE
-      fi
-      
-      if [[ ( "$1" == "-pcie" ) || ( "$1" == "--pcie_support" ) ]] ; then
-          PCIE_SUPPORT=TRUE
-      fi
+      elif [[ ( "$1" == "-gev" || "$1" == "--gev_support" || "$1" == "-u3v" || "$1" == "--u3v_support" || "$1" == "-pcie" || "$1" == "--pcie_support" ) ]] ; then
+        if [[ ( "$GEV_SUPPORT" == "undefined" ) ]] ; then
+          GEV_SUPPORT=FALSE
+        fi
+        if [[ ( "$U3V_SUPPORT" == "undefined" ) ]] ; then
+          U3V_SUPPORT=FALSE
+        fi
+        if [[ ( "$PCIE_SUPPORT" == "undefined" ) ]] ; then
+          PCIE_SUPPORT=FALSE
+        fi
+        
+        if [[ ( "$1" == "-gev" ) || ( "$1" == "--gev_support" )  ]] ; then
+            GEV_SUPPORT=TRUE
+        fi
+        
+        if [[  ( "$1" == "-u3v" ) || ( "$1" == "--u3v_support" ) ]] ; then
+            U3V_SUPPORT=TRUE
+        fi
+        
+        if [[ ( "$1" == "-pcie" ) || ( "$1" == "--pcie_support" ) ]] ; then
+            PCIE_SUPPORT=TRUE
+        fi
     fi
   else
     echo 'Please check your syntax and try again!'
@@ -219,8 +231,8 @@ if [ "$SHOW_HELP" == "YES" ] ; then
   echo 'Installation script for the '$PRODUCT' driver.'
   echo
   echo "Default installation path: "$DEF_DIRECTORY
-  echo "Usage:                     ./install_mvGenTL_Acquire.sh [OPTION] ... "
-  echo "Example:                   ./install_mvGenTL_Acquire.sh -p /myPath -u"
+  echo "Usage:                     ./install_mvGenTL_Acquire_ARM.sh [OPTION] ... "
+  echo "Example:                   ./install_mvGenTL_Acquire_ARM.sh -p /myPath -u"
   echo
   echo "Arguments:"
   echo "-h --help                  Display this help."
@@ -233,7 +245,7 @@ if [ "$SHOW_HELP" == "YES" ] ; then
   echo "-m --minimal               Minimal installation. No tools or samples will be built, and"
   echo "                           no automatic configuration and/or optimizations will be done."
   echo "                           By using this parameter you explicitly accept the EULA."
-  echo
+  echo 
   echo "Note:"
   echo "                           It is possible as well to combine unattended and minimal installation."
   echo "                           In this case the installation will use default settings and no tools"
@@ -261,16 +273,53 @@ fi
 # Get some details about the system
 check_distro_and_version
 
-# Get the targets platform and if it is called "i686" we know it is a x86 system, else it s x86_64
-#TARGET=$(uname -m)
+# Check if the user did specify that we shall use a specific directory instead of DEF_DIRECTORY
+if [ "$1" == "-p" ] || [ "$1" == "--path" ] ; then
+    if [ $(echo "$2") ] ; then
+      DEF_DIRECTORY=$2
+    else
+      echo
+      echo "WARNING: Path option used with no defined path, will use: $DEF_DIRECTORY directory"
+    fi
+else
+   echo
+   echo "No target directory specified, default directory: $DEF_DIRECTORY will be used..."
+fi
 
-
-if [ "$TARGET" == "i686" ]; then
-   TARGET="x86"
+# Get the intended target platform 
+if [ "$( ls | grep -c 'mvGenTL_Acquire.*\.tgz' )" != "0" ] ; then
+  TARNAME=`ls mvGenTL_Acquire*.tgz|tail -1 | sed -e s/\\.tgz//`
+  if [ "$(echo $TARNAME | grep -c ARMhf)" != "0" ]; then
+    TARGET="ARMhf"
+    TARGET_UNCAPITALIZED="armhf"
+    TARGET_POINTER_LENGTH=32
+  elif [ "$(echo $TARNAME | grep -c ARMsf)" != "0" ]; then
+    TARGET="ARMsf"
+    TARGET_UNCAPITALIZED="armsf"
+    TARGET_POINTER_LENGTH=32
+  elif [ "$(echo $TARNAME | grep -c armv7ahf)" != "0" ]; then
+    TARGET="armv7ahf"
+    TARGET_UNCAPITALIZED="armv7ahf"
+    TARGET_POINTER_LENGTH=32
+  elif [ "$(echo $TARNAME | grep -c armv7axe)" != "0" ]; then
+    TARGET="armv7axe"
+    TARGET_UNCAPITALIZED="armv7axe"
+    TARGET_POINTER_LENGTH=32
+  elif [ "$(echo $TARNAME | grep -c ARM64)" != "0" ]; then
+    TARGET="ARM64"
+    TARGET_UNCAPITALIZED="arm64"
+    TARGET_POINTER_LENGTH=64
+  else
+    echo "Error: Could not determine target architecture from file name."
+    echo "In case the file been renamed, please revert to original name."
+    echo "Terminating this installation script..."
+    echo
+    exit 1
+  fi 
 fi
 
 # PCIe support is only available for 64 bit platforms
-if [ "$TARGET" != "x86_64"  ]; then
+if [ "$TARGET_POINTER_LENGTH" == "32" ]; then
     PCIE_SUPPORT=FALSE
 fi
 
@@ -290,6 +339,8 @@ fi
 if grep -q '/etc/ld.so.conf.d/' /etc/ld.so.conf; then
    GENICAM_LDSOCONF_FILE=/etc/ld.so.conf.d/genicam.conf
    ACQUIRE_LDSOCONF_FILE=/etc/ld.so.conf.d/acquire.conf
+   #$SUDO rm -f $GENICAM_LDSOCONF_FILE; $SUDO touch $GENICAM_LDSOCONF_FILE
+   #$SUDO rm -f $ACQUIRE_LDSOCONF_FILE; $SUDO touch $ACQUIRE_LDSOCONF_FILE
 else
    GENICAM_LDSOCONF_FILE=/etc/ld.so.conf
    ACQUIRE_LDSOCONF_FILE=/etc/ld.so.conf
@@ -299,6 +350,8 @@ fi
 if grep -q '/etc/profile.d/' /etc/profile; then
    GENICAM_EXPORT_FILE=/etc/profile.d/genicam.sh
    ACQUIRE_EXPORT_FILE=/etc/profile.d/acquire.sh
+   #$SUDO rm -f $GENICAM_EXPORT_FILE; $SUDO touch $GENICAM_EXPORT_FILE
+   #$SUDO rm -f $ACQUIRE_EXPORT_FILE; $SUDO touch $ACQUIRE_EXPORT_FILE
 else
    GENICAM_EXPORT_FILE=/etc/profile
    ACQUIRE_EXPORT_FILE=/etc/profile
@@ -308,27 +361,9 @@ fi
 if [ "$( ls | grep -c 'mvGenTL_Acquire.*\.tgz' )" != "0" ] ; then
   TARNAME=`ls mvGenTL_Acquire*.tgz | tail -n 1 | sed -e s/\\.tgz//`
   TARFILE=`ls mvGenTL_Acquire*.tgz | tail -n 1`
-  #VERSION=`ls mvGenTL_Acquire*.tgz | tail -n 1 | sed -e s/\\mvGenTL_Acquire// | sed -e s/\\-$TARGET// | sed -e s/\\_gnu-// | sed -e s/\\.tgz//` 
+  VERSION=`ls mvGenTL_Acquire*.tgz | tail -n 1 | sed -e s/\\mvGenTL_Acquire// | sed -e s/\\-$TARGET// | sed -e s/\\_gnu.*-// | sed -e s/\\.tgz//` 
   ACT2=$API-$VERSION
   ACT=$API-$TARGET-$VERSION
-fi
-
-# Check if tar-file is correct for the system architecture
-if [ "$TARGET" == "x86_64"  ]; then
-  if [ "`echo $TARNAME | grep -c x86_ABI2`" != "0" ]; then
-    echo "-----------------------------------------------------------------------------------"
-    echo "${red}  ABORTING: Attempt to install 32-bit drivers in a 64-bit machine!  ${reset}" 
-    echo "-----------------------------------------------------------------------------------"
-    exit
-  fi
-fi
-if [ "$TARGET" == "x86" ]; then
-  if [ "`echo $TARNAME | grep -c x86_64_ABI2`" != "0" ]; then
-    echo "-----------------------------------------------------------------------------------"
-    echo "${red}  ABORTING: Attempt to install 64-bit drivers in a 32-bit machine!  ${reset}" 
-    echo "-----------------------------------------------------------------------------------"
-    exit
-  fi
 fi
 
 # A quick check whether the Version has a correct format (due to other files being in the same directory..?)
@@ -509,58 +544,66 @@ if [ "$MVIMPACT_ACQUIRE_DIR" != "" ]; then
   fi
 fi
  
-# Determine whether mvGenTL_Acquire should support GEV, U3V and/or mvBlueNAOS device types on this system
-echo ""
-echo "Should mvGenTL_Acquire support GEV devices, such as mvBlueCOUGAR (default is 'yes')?"
-echo "Hit 'n' + <Enter> for 'no', or just <Enter> for 'yes'."
-
-if [ "$GEV_SUPPORT" == "undefined" ]; then
-  if [ "$USE_DEFAULTS" == "NO" ] ; then
-    read YES_NO
+# Determine whether mvGenTL_Acquire should support GEV, U3V and/or PCIe device types on this system
+if [ "$TARGET" != "armv7ahf" ] && [ "$TARGET" != "armv7axe" ]; then
+  # no GEV support for the above platforms ON THIS HOST
+  echo ""
+  echo "Should mvGenTL_Acquire support GEV devices, such as mvBlueCOUGAR (default is 'yes')?"
+  echo "Hit 'n' + <Enter> for 'no', or just <Enter> for 'yes'."
+  if [ "$GEV_SUPPORT" == "undefined" ]; then
+     if [ "$USE_DEFAULTS" == "NO" ] ; then
+        read YES_NO
+     else
+        YES_NO=""
+     fi
+     if [ "$YES_NO" == "n" ] || [ "$YES_NO" == "N" ]; then
+        GEV_SUPPORT=FALSE
+     else
+        GEV_SUPPORT=TRUE
+     fi
   else
-    YES_NO=""
+    echo GEV_SUPPORT="$GEV_SUPPORT"
   fi
-  if [ "$YES_NO" == "n" ] || [ "$YES_NO" == "N" ]; then
-      GEV_SUPPORT=FALSE
-  else
-      GEV_SUPPORT=TRUE
-  fi
-else
-  echo GEV_SUPPORT="$GEV_SUPPORT"
 fi
-echo ""
-echo "Should mvGenTL_Acquire support U3V devices, such as mvBlueFOX3 (default is 'yes')?"
-echo "Hit 'n' + <Enter> for 'no', or just <Enter> for 'yes'."
-if [ "$U3V_SUPPORT" == "undefined" ]; then
-  if [ "$USE_DEFAULTS" == "NO" ] ; then
-    read YES_NO
+if [ "$TARGET" != "armv7ahf" ] && [ "$TARGET" != "armv7axe" ]; then
+  # no USB support for the above platforms
+  echo ""
+  echo "Should mvGenTL_Acquire support U3V devices, such as mvBlueFOX3 (default is 'yes')?"
+  echo "Hit 'n' + <Enter> for 'no', or just <Enter> for 'yes'."
+  if [ "$U3V_SUPPORT" == "undefined" ]; then
+    if [ "$USE_DEFAULTS" == "NO" ] ; then
+      read YES_NO
+    else
+      YES_NO=""
+    fi
+    if [ "$YES_NO" == "n" ] || [ "$YES_NO" == "N" ]; then
+        U3V_SUPPORT=FALSE
+    else
+        U3V_SUPPORT=TRUE
+    fi
   else
-    YES_NO=""
+    echo U3V_SUPPORT="$U3V_SUPPORT"
   fi
-  if [ "$YES_NO" == "n" ] || [ "$YES_NO" == "N" ]; then
-      U3V_SUPPORT=FALSE
-  else
-      U3V_SUPPORT=TRUE
-  fi
-else
-  echo U3V_SUPPORT="$U3V_SUPPORT"
 fi
-echo ""
-echo "Should mvGenTL_Acquire support mvBlueNAOS devices (default is 'yes')?"
-echo "Hit 'n' + <Enter> for 'no', or just <Enter> for 'yes'."
-if [ "$PCIE_SUPPORT" == "undefined" ]; then
-  if [ "$USE_DEFAULTS" == "NO" ] ; then
-    read YES_NO
-  else
-    YES_NO=""
-  fi
-  if [ "$YES_NO" == "n" ] || [ "$YES_NO" == "N" ]; then
+if [ "$TARGET" == "ARM64" ]; then
+  # PCIe support only available for 64 bit platform
+  echo ""
+  echo "Should mvGenTL_Acquire support mvBlueNAOS devices (default is 'yes')?"
+  echo "Hit 'n' + <Enter> for 'no', or just <Enter> for 'yes'."
+  if [ "$PCIE_SUPPORT" == "undefined" ]; then
+    if [ "$USE_DEFAULTS" == "NO" ] ; then
+      read YES_NO
+    else
+      YES_NO=""
+    fi
+    if [ "$YES_NO" == "n" ] || [ "$YES_NO" == "N" ]; then
       PCIE_SUPPORT=FALSE
-  else
+    else
       PCIE_SUPPORT=TRUE
-  fi
-else
+    fi
+  else
     echo PCIE_SUPPORT="$PCIE_SUPPORT"
+  fi
 fi
 
 if [ "$U3V_SUPPORT" == "FALSE" ] && [ "$GEV_SUPPORT" == "FALSE" ] && [ "$PCIE_SUPPORT" == "FALSE" ]; then
@@ -614,55 +657,18 @@ if ! [ -r $TARFILE ]; then
 fi
 
 # needed at compile time (used during development, but not shipped with the final program)
-ACT=$API-$VERSION.tar
+#ACT=$API-$VERSION.tar
 
 # needed at run time
 BC=mvGenTL_Acquire_runtime
 BCT=$BC-$VERSION.tar
 
-# Now unpack the tar-file into /tmp
+# Now unpack the tar-file into the target directory
 cd /tmp
+rm -rf mvIMPACT_Acquire-ARM*
 tar xfz "$SCRIPTSOURCEDIR/$TARFILE"
-
-# Change to destination directory and remove older libs if any
-cd $DEF_DIRECTORY
-if ! [ -d $DEF_DIRECTORY/runtime ]; then
-  mkdir runtime >/dev/null 2>&1
-  if ! [ -d $DEF_DIRECTORY/runtime ]; then
-      # that didn't work
-      # now try it as superuser
-      $SUDO mkdir --parent $DEF_DIRECTORY/runtime
-  fi
-fi
-cd runtime
-# Remove older versions (if any)
-$SUDO rm -f lib/libmv*.so*
-
-# Now unpack the mvBlueCOUGAR_runtime files
-$SUDO tar xf /tmp/$BCT
-
-# The runtime tar contains either the i86 or the x64 tgz
-if [ -r GenICam_V3_3_0-Linux32_i86_gcc48-Runtime.tgz ]; then
-   if [ x$TARGET != xx86 ]; then
-      echo 'Platform conflict : GenICam runtime is 32-bit, but target is 64-bit'
-      let ERROR_NUMBER=ERROR_NUMBER+1
-   fi
-   $SUDO tar xzf GenICam_V3_3_0-Linux32_i86_gcc48-Runtime.tgz;
-   GENVER=`ls GenICam_V*.tgz | tail -n1 | sed -e s/\\.tgz// | sed -e 's/-.*//' | sed 's/GenICam_V//g'`
-   $SUDO rm GenICam_V3_3_0-Linux32_i86_gcc48-Runtime.tgz
-fi
-if [ -r GenICam_V3_3_0-Linux64_x64_gcc48-Runtime.tgz ]; then
-   if [ x$TARGET = xx86 ]; then
-      echo 'Platform conflict : GenICam runtime is 64bit, but target is 32bit'
-      let ERROR_NUMBER=ERROR_NUMBER+1
-   fi
-   $SUDO tar xzf GenICam_V3_3_0-Linux64_x64_gcc48-Runtime.tgz;
-   GENVER=`ls GenICam_V*.tgz | tail -n1 | sed -e s/\\.tgz// | sed -e 's/-.*//' | sed 's/GenICam_V//g'`
-   $SUDO rm GenICam_V3_3_0-Linux64_x64_gcc48-Runtime.tgz
-fi
-
-$SUDO chown -R $USER: *
-$SUDO chmod -R 755 *
+cd $ACT
+cp -R -d * $DEF_DIRECTORY
 
 if ! [ -r $GENICAM_EXPORT_FILE ]; then
    echo 'Error : cannot write to' $GENICAM_EXPORT_FILE.
@@ -676,35 +682,22 @@ else
    else
       $SUDO sh -c "echo 'export GENICAM_ROOT=$DEF_DIRECTORY/runtime' >> $GENICAM_EXPORT_FILE"
    fi
-   if grep -q 'GENICAM_ROOT_V$GENVER=' $GENICAM_EXPORT_FILE; then
-      echo 'GENICAM_ROOT_V'$GENVER' already defined in' $GENICAM_EXPORT_FILE.
+   if grep -q 'GENICAM_ROOT_V$GENICAM_VERSION=' $GENICAM_EXPORT_FILE; then
+      echo 'GENICAM_ROOT_V'$GENICAM_VERSION' already defined in' $GENICAM_EXPORT_FILE.
    else
-      $SUDO sh -c "echo 'export GENICAM_ROOT_V$GENVER=$DEF_DIRECTORY/runtime' >> $GENICAM_EXPORT_FILE"
+      $SUDO sh -c "echo 'export GENICAM_ROOT_V$GENICAM_VERSION=$DEF_DIRECTORY/runtime' >> $GENICAM_EXPORT_FILE"
    fi
-   if [ x$TARGET = xx86 ]; then
-      if grep -q 'GENICAM_GENTL32_PATH=' $GENICAM_EXPORT_FILE; then
-         echo 'GENICAM_GENTL32_PATH already defined in' $GENICAM_EXPORT_FILE.
-      else
-         $SUDO sh -c "echo 'if [ x\$GENICAM_GENTL32_PATH == x ]; then
-   export GENICAM_GENTL32_PATH=$DEF_DIRECTORY/lib/$TARGET
-elif [ x\$GENICAM_GENTL32_PATH != x$DEF_DIRECTORY/lib/$TARGET ]; then
-   if ! \$(echo \$GENICAM_GENTL32_PATH | grep -q \":$DEF_DIRECTORY/lib/$TARGET\"); then
-      export GENICAM_GENTL32_PATH=\$GENICAM_GENTL32_PATH:$DEF_DIRECTORY/lib/$TARGET
+
+   if grep -q 'GENICAM_GENTL${TARGET_POINTER_LENGTH}_PATH=' $GENICAM_EXPORT_FILE; then
+      echo 'GENICAM_GENTL${TARGET_POINTER_LENGTH}_PATH already defined in' $GENICAM_EXPORT_FILE.
+   else
+      $SUDO sh -c "echo 'if [ x\$GENICAM_GENTL${TARGET_POINTER_LENGTH}_PATH == x ]; then
+   export GENICAM_GENTL${TARGET_POINTER_LENGTH}_PATH=$DEF_DIRECTORY/lib/$TARGET_UNCAPITALIZED
+elif [ x\$GENICAM_GENTL${TARGET_POINTER_LENGTH}_PATH != x$DEF_DIRECTORY/lib/$TARGET_UNCAPITALIZED ]; then
+   if ! \$(echo \$GENICAM_GENTL${TARGET_POINTER_LENGTH}_PATH | grep -q \":$DEF_DIRECTORY/lib/$TARGET_UNCAPITALIZED\"); then
+      export GENICAM_GENTL${TARGET_POINTER_LENGTH}_PATH=\$GENICAM_GENTL${TARGET_POINTER_LENGTH}_PATH:$DEF_DIRECTORY/lib/$TARGET_UNCAPITALIZED
    fi
 fi' >> $GENICAM_EXPORT_FILE"
-      fi
-   else
-      if grep -q 'GENICAM_GENTL64_PATH=' $GENICAM_EXPORT_FILE; then
-         echo 'GENICAM_GENTL64_PATH already defined in' $GENICAM_EXPORT_FILE.
-      else
-         $SUDO sh -c "echo 'if [ x\$GENICAM_GENTL64_PATH == x ]; then
-   export GENICAM_GENTL64_PATH=$DEF_DIRECTORY/lib/$TARGET
-elif [ x\$GENICAM_GENTL64_PATH != x$DEF_DIRECTORY/lib/$TARGET ]; then
-   if ! \$(echo \$GENICAM_GENTL64_PATH | grep -q \":$DEF_DIRECTORY/lib/$TARGET\"); then
-      export GENICAM_GENTL64_PATH=\$GENICAM_GENTL64_PATH:$DEF_DIRECTORY/lib/$TARGET
-   fi
-fi' >> $GENICAM_EXPORT_FILE"
-      fi
    fi
 
 # Since mvIMPACT Acquire version 2.7.0, version 2.4 of the GenICam cache should be able to coexist with
@@ -728,46 +721,37 @@ fi' >> $GENICAM_EXPORT_FILE"
    if grep -q 'GENICAM_CACHE_V3_3=' $GENICAM_EXPORT_FILE; then
       echo 'GENICAM_CACHE_V3_3 already defined in' $GENICAM_EXPORT_FILE.
    else
-      $SUDO mkdir -p $DEF_DIRECTORY/runtime/cache/v3_3
+      $SUDO mkdir -p $DEF_DIRECTORY/runtime/cache/v$GENICAM_VERSION
       $SUDO chmod -R 777 $DEF_DIRECTORY/runtime/cache
       $SUDO sh -c "echo 'export GENICAM_CACHE_V3_3='$DEF_DIRECTORY'/runtime/cache/v3_3' >> $GENICAM_EXPORT_FILE"
    fi
-   if grep -q 'GENICAM_LOG_CONFIG_V'$GENVER'=' $GENICAM_EXPORT_FILE; then
-      echo 'GENICAM_LOG_CONFIG_V'$GENVER' already defined in' $GENICAM_EXPORT_FILE.
+   if grep -q 'GENICAM_LOG_CONFIG_V'$GENICAM_VERSION'=' $GENICAM_EXPORT_FILE; then
+      echo 'GENICAM_LOG_CONFIG_V'$GENICAM_VERSION' already defined in' $GENICAM_EXPORT_FILE.
    else
-      $SUDO sh -c "echo 'export GENICAM_LOG_CONFIG_V'$GENVER'=$DEF_DIRECTORY/runtime/log/config-unix/DefaultLogging.properties' >> $GENICAM_EXPORT_FILE"
+      $SUDO sh -c "echo 'export GENICAM_LOG_CONFIG_V'$GENICAM_VERSION'=$DEF_DIRECTORY/runtime/log/config-unix/DefaultLogging.properties' >> $GENICAM_EXPORT_FILE"
    fi
 fi
 
-# Now check if we can unpack the tar file with the device independent stuff
-# this is entirely optional
-if [ -r /tmp/$ACT ]; then
-   cd /tmp
-   tar xf /tmp/$ACT
-   $SUDO cp -r $ACT2/* $DEF_DIRECTORY
-else
-  echo
-  echo "ERROR: Could not read: /tmp/"$ACT2
-  exit
-fi
-
-# Set the necessary exports and library paths
-cd $DEF_DIRECTORY
+#Set the necessary exports and library paths
 if grep -q 'MVIMPACT_ACQUIRE_DIR=' $ACQUIRE_EXPORT_FILE; then
    echo 'MVIMPACT_ACQUIRE_DIR already defined in' $ACQUIRE_EXPORT_FILE.
 else
    $SUDO sh -c "echo 'export MVIMPACT_ACQUIRE_DIR=$DEF_DIRECTORY' >> $ACQUIRE_EXPORT_FILE"
 fi
 
-if grep -q "$DEF_DIRECTORY/lib/$TARGET" $ACQUIRE_LDSOCONF_FILE; then
-   echo "$DEF_DIRECTORY/lib/$TARGET already defined in" $ACQUIRE_LDSOCONF_FILE.
+if grep -q "$DEF_DIRECTORY/lib/$TARGET_UNCAPITALIZED" $ACQUIRE_LDSOCONF_FILE; then
+   echo "$DEF_DIRECTORY/lib/$TARGET_UNCAPITALIZED already defined in" $ACQUIRE_LDSOCONF_FILE.
 else
-   $SUDO sh -c "echo '$DEF_DIRECTORY/lib/$TARGET' >> $ACQUIRE_LDSOCONF_FILE"
+   $SUDO sh -c "echo '$DEF_DIRECTORY/lib/$TARGET_UNCAPITALIZED' >> $ACQUIRE_LDSOCONF_FILE"
 fi
-if grep -q "$DEF_DIRECTORY/Toolkits/expat/bin/$TARGET/lib" $ACQUIRE_LDSOCONF_FILE; then
-   echo "$DEF_DIRECTORY/Toolkits/expat/bin/$TARGET/lib already defined in" $ACQUIRE_LDSOCONF_FILE.
-else
-   $SUDO sh -c "echo '$DEF_DIRECTORY/Toolkits/expat/bin/$TARGET/lib' >> $ACQUIRE_LDSOCONF_FILE"
+
+if [ "$TARGET" != "armv7ahf" ] && [ "$TARGET" != "armv7axe" ]; then
+  # not installing libexpat for the above platforms
+  if grep -q "$DEF_DIRECTORY/Toolkits/expat/bin/$TARGET_UNCAPITALIZED/lib" $ACQUIRE_LDSOCONF_FILE; then
+    echo "$DEF_DIRECTORY/Toolkits/expat/bin/$TARGET_UNCAPITALIZED/lib already defined in" $ACQUIRE_LDSOCONF_FILE.
+  else
+    $SUDO sh -c "echo '$DEF_DIRECTORY/Toolkits/expat/bin/$TARGET_UNCAPITALIZED/lib' >> $ACQUIRE_LDSOCONF_FILE"
+  fi
 fi
 
 # Now do the shared linker setup
@@ -777,13 +761,23 @@ if ! [ -r $GENICAM_LDSOCONF_FILE ]; then
    let ERROR_NUMBER=ERROR_NUMBER+1
    echo
 else
-   if [ x$TARGET = xx86 ]; then
-      GENILIBPATH=Linux32_i86
-   else
-      GENILIBPATH=Linux64_x64
+   if [ "$TARGET" = "ARMsf" ]; then
+      GENILIBPATH=Linux32_ARM
+   elif [ "$TARGET" = "ARMhf" ] || [ "$TARGET" = "armv7ahf" ] || [ "$TARGET" = "armv7axe" ]; then
+      GENILIBPATH=Linux32_ARMhf
+   elif [ "$TARGET" = "ARM64" ]; then
+      GENILIBPATH=Linux64_ARM
    fi
    # tests below do not check for *commented out* link lines
    # must later add sub-string check
+
+   # acquire libs
+   if grep -q "$DEF_DIRECTORY/lib/$TARGET_UNCAPITALIZED" $GENICAM_LDSOCONF_FILE; then
+      echo "$DEF_DIRECTORY/lib/$TARGET_UNCAPITALIZED already defined in" $GENICAM_LDSOCONF_FILE.
+   else
+      $SUDO sh -c "echo '$DEF_DIRECTORY/lib/$TARGET_UNCAPITALIZED' >> $GENICAM_LDSOCONF_FILE"
+   fi
+
    # GenICam libs
    if grep -q "$DEF_DIRECTORY/runtime/bin/$GENILIBPATH" $GENICAM_LDSOCONF_FILE; then
       echo "$DEF_DIRECTORY/runtime/bin/$GENILIBPATH already defined in" $GENICAM_LDSOCONF_FILE.
@@ -795,282 +789,212 @@ fi
 # This variable must be exported, or else wxPropView-related make problems can arise
 export MVIMPACT_ACQUIRE_DIR=$DEF_DIRECTORY
 
-# Move all the mvIMPACT Acquire related libraries to the mvIA/lib folder.
-if [ -r /tmp/$ACT ]; then
-   cd $DEF_DIRECTORY/lib/$TARGET
-   $SUDO mv $DEF_DIRECTORY/runtime/lib/* .
-   $SUDO rmdir $DEF_DIRECTORY/runtime/lib
+#create softlinks for the Toolkits libraries
+if [ "$TARGET" != "armv7ahf" ] && [ "$TARGET" != "armv7axe" ]; then
+   # not installing for the above platforms
+   createSoftlink $DEF_DIRECTORY/Toolkits/expat/bin/$TARGET_UNCAPITALIZED/lib $(ls $DEF_DIRECTORY/Toolkits/expat/bin/$TARGET_UNCAPITALIZED/lib | grep libexpat\.so\..*\..*\. ) libexpat.so.1
+   createSoftlink $DEF_DIRECTORY/Toolkits/expat/bin/$TARGET_UNCAPITALIZED/lib libexpat.so.1 libexpat.so
+   createSoftlink $DEF_DIRECTORY/Toolkits/FreeImage3160/bin/Release/FreeImage/$TARGET_UNCAPITALIZED $(ls $DEF_DIRECTORY/Toolkits/FreeImage3160/bin/Release/FreeImage/$TARGET_UNCAPITALIZED | grep libfreeimage-3\..*\.so ) libfreeimage.so.3
+   createSoftlink $DEF_DIRECTORY/Toolkits/FreeImage3160/bin/Release/FreeImage/$TARGET_UNCAPITALIZED libfreeimage.so.3 libfreeimage.so
+   if [ "$U3V_SUPPORT" == "TRUE" ]; then
+      createSoftlink $DEF_DIRECTORY/Toolkits/libusb-1.0.21/bin/$TARGET_UNCAPITALIZED/lib libusb-1.0.so.0.1.0  libusb-1.0.so.0
+      createSoftlink $DEF_DIRECTORY/Toolkits/libusb-1.0.21/bin/$TARGET_UNCAPITALIZED/lib libusb-1.0.so.0  libusb-1.0.so
+      createSoftlink $DEF_DIRECTORY/Toolkits/libudev/bin/$TARGET_UNCAPITALIZED/lib $(ls $DEF_DIRECTORY/Toolkits/libudev/bin/$TARGET_UNCAPITALIZED/lib | grep libudev\.so\..*\..*\. ) libudev.so.1
+      createSoftlink $DEF_DIRECTORY/Toolkits/libudev/bin/$TARGET_UNCAPITALIZED/lib libudev.so.1 libudev.so
+   else
+      $SUDO rm -rf $DEF_DIRECTORY/Toolkits/libusb-1.0.21 >/dev/null 2>&1
+      $SUDO rm -rf $DEF_DIRECTORY/Toolkits/libudev >/dev/null 2>&1
+   fi
 fi
 
-# Clean up /tmp
-rm -r -f /tmp/$ACT /tmp/$BCT /tmp/$API-$VERSION
-
-# create softlinks for the Toolkits libraries
-createSoftlink $DEF_DIRECTORY/Toolkits/expat/bin/$TARGET/lib libexpat.so.0.5.0 libexpat.so.0
-createSoftlink $DEF_DIRECTORY/Toolkits/expat/bin/$TARGET/lib libexpat.so.0 libexpat.so
-createSoftlink $DEF_DIRECTORY/Toolkits/FreeImage3160/bin/Release/FreeImage/$TARGET libfreeimage-3.16.0.so libfreeimage.so.3
-createSoftlink $DEF_DIRECTORY/Toolkits/FreeImage3160/bin/Release/FreeImage/$TARGET libfreeimage.so.3 libfreeimage.so
-if [ "$U3V_SUPPORT" == "TRUE" ]; then
-   createSoftlink $DEF_DIRECTORY/Toolkits/libusb-1.0.21/bin/$TARGET/lib libusb-1.0.so.0.1.0 libusb-1.0.so.0
-   createSoftlink $DEF_DIRECTORY/Toolkits/libusb-1.0.21/bin/$TARGET/lib libusb-1.0.so.0 libusb-1.0.so
-   createSoftlink $DEF_DIRECTORY/Toolkits/libudev/bin/$TARGET/lib libudev.so.0.13.0 libudev.so.0
-   createSoftlink $DEF_DIRECTORY/Toolkits/libudev/bin/$TARGET/lib libudev.so.0 libudev.so
+#An important distinction has to be made here between 32bit and 64bit ARM systems
+if [ $TARGET != "ARM64" ]; then
+# Since the native make target for 32bit ARM architectures can have many different values 
+# (eg. armv7l, arm7ahf etc. ) and will not be 'armhf' or 'armsf', a softlink has to be created, 
+# otherwise the mv apps and tools will not be able to be linked with the mv libraries.
+   if [ "$TARGET" != "armv7ahf" ] && [ "$TARGET" != "armv7axe" ]; then
+      # not installing for the above platforms
+      createSoftlink $DEF_DIRECTORY/lib $TARGET_UNCAPITALIZED $ARM_ARCHITECTURE
+      createSoftlink $DEF_DIRECTORY/Toolkits/expat/bin $TARGET_UNCAPITALIZED $ARM_ARCHITECTURE
+      createSoftlink $DEF_DIRECTORY/Toolkits/FreeImage3160/bin/Release/FreeImage $TARGET_UNCAPITALIZED $ARM_ARCHITECTURE
+      if [ "$U3V_SUPPORT" == "TRUE" ]; then
+         createSoftlink $DEF_DIRECTORY/Toolkits/libudev/bin $TARGET_UNCAPITALIZED $ARM_ARCHITECTURE
+         createSoftlink $DEF_DIRECTORY/Toolkits/libusb-1.0.21/bin $TARGET_UNCAPITALIZED $ARM_ARCHITECTURE
+      fi
+   fi
 else
-   $SUDO rm -rf $DEF_DIRECTORY/Toolkits/libusb-1.0.21 >/dev/null 2>&1
-   $SUDO rm -rf $DEF_DIRECTORY/Toolkits/libudev >/dev/null 2>&1
+# In case of 64bit ARM architectures, they always report 'aarch64' back, which makes our lives 
+# considerably easier. In this case we do not need to create softlinks, but the $ARM_ARCHITECTURE
+# needs to be overwritten so that the mvApps softlinks in /usr/bin will point to the correct path.
+    ARM_ARCHITECTURE=$TARGET_UNCAPITALIZED
 fi
 
 # Update the library cache with ldconfig
 $SUDO /sbin/ldconfig
 
+#Set the necessary cti softlinks
+if [ "$GEV_SUPPORT" == "TRUE" ] || [ "$U3V_SUPPORT" == "TRUE" ]; then
+    createSoftlink $DEF_DIRECTORY/lib/$TARGET_UNCAPITALIZED libmvGenTLProducer.so mvGenTLProducer.cti
+fi
+if [ "$PCIE_SUPPORT" == "TRUE" ]; then
+  createSoftlink $DEF_DIRECTORY/lib/$TARGET_UNCAPITALIZED libmvGenTLProducer.PCIe.so mvGenTLProducer.PCIe.cti
+fi
+
+# In case GEV devices should not be supported, do not build mvIPConfigure
+if [ "$GEV_SUPPORT" == "FALSE" ]; then
+    if [ -d $DEF_DIRECTORY/apps/mvIPConfigure ] && [ -r $DEF_DIRECTORY/apps/mvIPConfigure/Makefile ]; then
+        $SUDO rm -rf $DEF_DIRECTORY/apps/mvIPConfigure
+    fi
+fi
+
 if [ "$MINIMAL_INSTALLATION" == "NO" ] ; then
   # apt-get extra parameters
   if [ "$USE_DEFAULTS" == "YES" ] ; then
-    APT_GET_EXTRA_PARAMS=" -y"
-    YUM_EXTRA_PARAMS=" -yq"
- 
-    # Install needed libraries and compiler
-    COULD_NOT_INSTALL="Could not find the package manager of the system; please install >%s< manually."
-    DISTRO_NOT_SUPPORTED="Your Linux distribution is currently not officially supported by this installation script. Please install required package >%s< manually."
-    
-    # Check if we have g++
-    if ! which g++ >/dev/null 2>&1; then
-      if [ "$OS_NAME" == "Ubuntu" ] || [ "$OS_NAME" == "Debian" ]; then
-        if which apt-get >/dev/null 2>&1; then
-          $SUDO apt-get $APT_GET_EXTRA_PARAMS -q install g++
-        fi
-      elif [ "$OS_NAME" == "SuSE" ] ; then
-        if $SUDO which yast >/dev/null 2>&1; then
-          YASTBIN=`$SUDO which yast`
-          $SUDO $YASTBIN --install gcc-c++ make
-        else
-          printf "$COULD_NOT_INSTALL" "g++"
-          let WARNING_NUMBER=WARNING_NUMBER+1
-        fi
-      elif [ "$OS_NAME" == "RedHat" ] || [ "$OS_NAME" == "Fedora" ] ; then
-        if $SUDO which yum >/dev/null 2>&1; then
-          echo 'Installing gcc and gcc-c++'
-          $SUDO yum $YUM_EXTRA_PARAMS install gcc gcc-c++
-        else
-          printf "$COULD_NOT_INSTALL" "g++"
-          let WARNING_NUMBER=WARNING_NUMBER+1
-        fi
-      else
-        printf "$DISTRO_NOT_SUPPORTED" "g++"
-        let WARNING_NUMBER=WARNING_NUMBER+1
-      fi
-    fi
-    
-    INPUT_REQUEST="Do you want to install >%s< (default is 'yes')?\nHit 'n' + <Enter> for 'no', or just <Enter> for 'yes'.\n"
-    YES_NO=
-    
-    # Check if we have expat-devel   
-    if [ "$OS_NAME" == "Ubuntu" ] || [ "$OS_NAME" == "Debian" ]; then
-      if which apt-get >/dev/null 2>&1; then
-        $SUDO apt-get $APT_GET_EXTRA_PARAMS -q install libexpat1-dev
-      fi
-    elif [ "$OS_NAME" == "SuSE" ] ; then
-      if $SUDO which yast >/dev/null 2>&1; then
-        YASTBIN=`$SUDO which yast`
-        $SUDO $YASTBIN --install expat libexpat-devel
-      fi
-    elif [ "$OS_NAME" == "RedHat" ] || [ "$OS_NAME" == "Fedora" ] ; then
-        if $SUDO which yum >/dev/null 2>&1; then
-          $SUDO yum $YUM_EXTRA_PARAMS install expat-devel
-        fi
-      else
-      printf "$COULD_NOT_INSTALL" "libexpat"
-      let WARNING_NUMBER=WARNING_NUMBER+1
-    fi
-    
-    # Do we want to install wxWidgets?
-    if [ "$(wx-config --release 2>&1 | grep -c "^3.")" != "1" ] ||
-      [ "$(wx-config --libs 2>&1 | grep -c "webview")" != "1" ] ||
-      [ "$(wx-config --selected-config 2>&1 | grep -c "gtk3")" == "0" ]; then
+    APT_GET_EXTRA_PARAMS=" -y"  
+
+    # Ask whether the samples should be built natively
+    if [ "$TARGET" != "armv7ahf" ] && [ "$TARGET" != "armv7axe" ]; then
+      # not building native for the above platforms - this is a CROSS install and we do not have the NATIVE libmv* files!
       echo
-      printf "$INPUT_REQUEST" "wxWidgets"
-      echo "This is highly recommended, as without wxWidgets, you cannot build wxPropView."
-      echo
-      if [ "$USE_DEFAULTS" == "NO" ] ; then
-        read YES_NO
-      else
-        YES_NO=""
-      fi
-      if [ "$YES_NO" == "n" ] || [ "$YES_NO" == "N" ]; then
-          echo 'Not installing wxWidgets'
-      else
-        if [ "$OS_NAME" == "Ubuntu" ] || [ "$OS_NAME" == "Debian" ]; then
-          if which apt-get >/dev/null 2>&1; then
-            $SUDO apt-get update
-            echo 'Installing wxWidgets'
-            $SUDO apt-get $APT_GET_EXTRA_PARAMS -q install libwxgtk-webview3.0-gtk3-* libwxgtk3.0-gtk3-* wx3.0-headers build-essential libgtk2.0-dev
-          else
-            printf "$COULD_NOT_INSTALL" "wxWidgets"
-            let WARNING_NUMBER=WARNING_NUMBER+1
-          fi
-          if [ "$(update-alternatives --list wx-config | grep -c "gtk3")" == "1" ]; then
-            echo "Using GTK3 wxWidgets as default during this installation."
-            $SUDO update-alternatives --set wx-config $(update-alternatives --list wx-config | grep gtk3)
-          fi
-        elif [ "$OS_NAME" == "SuSE" ] ; then
-          if $SUDO which yast >/dev/null 2>&1; then
-            echo 'Installing wxWidgets'
-            YASTBIN=`$SUDO which yast`
-            $SUDO $YASTBIN --install wxGTK-devel
-          else
-            printf "$COULD_NOT_INSTALL" "wxWidgets"
-            let WARNING_NUMBER=WARNING_NUMBER+1
-          fi
-        elif [ "$OS_NAME" == "RedHat" ] || [ "$OS_NAME" == "Fedora" ] ; then
-          if $SUDO which yum >/dev/null 2>&1; then
-            echo 'Installing wxWidgets'
-            $SUDO yum $YUM_EXTRA_PARAMS install wxGTK3 wxGTK3-devel
-            printf "$COULD_NOT_INSTALL" "wxWidgets"
-            let WARNING_NUMBER=WARNING_NUMBER+1
-          else
-            printf "$DISTRO_NOT_SUPPORTED" "wxWidgets"
-            let WARNING_NUMBER=WARNING_NUMBER+1
-          fi
-        fi
-      fi
-    fi
-  fi
-  
-  # Do we want to install FLTK?
-  if ! which fltk-config >/dev/null 2>&1; then
-     echo
-     printf "$INPUT_REQUEST" "FLTK"
-     echo "This is only required if you want to build the 'ContinuousCaptureFLTK' sample."
-     echo
-     if [ "$USE_DEFAULTS" == "NO" ] ; then
-       read YES_NO
-     else
-       YES_NO=""
-     fi
-     if [ "$YES_NO" == "n" ] || [ "$YES_NO" == "N" ]; then
-        echo 'Not installing FLTK'
-     else
-       if [ "$OS_NAME" == "Ubuntu" ] || [ "$OS_NAME" == "Debian" ]; then
-        if which apt-get >/dev/null 2>&1; then
-          echo 'Installing FLTK'
-          $SUDO apt-get $APT_GET_EXTRA_PARAMS -q install libgl1-mesa-dev
-          $SUDO apt-get $APT_GET_EXTRA_PARAMS -q install libfltk1.1-dev
-        else
-          printf "$COULD_NOT_INSTALL" "FLTK"
-          let WARNING_NUMBER=WARNING_NUMBER+1
-        fi
-       elif [ "$OS_NAME" == "SuSE" ] ; then
-         if $SUDO which yast >/dev/null 2>&1; then
-          echo 'Installing FLTK'
-          YASTBIN=`$SUDO which yast`
-          $SUDO $YASTBIN --install Mesa-devel
-          $SUDO $YASTBIN --install fltk-devel
-         else
-          printf "$COULD_NOT_INSTALL" "FLTK"
-          let WARNING_NUMBER=WARNING_NUMBER+1
-        fi
-       elif [ "$OS_NAME" == "RedHat" ] || [ "$OS_NAME" == "Fedora" ] ; then
-        if $SUDO which yum >/dev/null 2>&1; then
-         echo 'Installing FLTK'
-         $SUDO yum $YUM_EXTRA_PARAMS install fltk fltk-devel
-        else
-          printf "$COULD_NOT_INSTALL" "FLTK"
-          let WARNING_NUMBER=WARNING_NUMBER+1
-        fi
-       else
-        printf "$DISTRO_NOT_SUPPORTED" "FLTK"
-        let WARNING_NUMBER=WARNING_NUMBER+1
-       fi
-     fi
-  fi
-  
-  # In case GEV devices should not be supported remove mvIPConfigure 
-  if [ "$GEV_SUPPORT" == "FALSE" ]; then
-    if [ -d $DEF_DIRECTORY/apps/mvIPConfigure ] && [ -r $DEF_DIRECTORY/apps/mvIPConfigure/Makefile ]; then
-      $SUDO rm -rf $DEF_DIRECTORY/apps/mvIPConfigure >/dev/null 2>&1
-    fi
-  fi
-  
-  if [ "$MINIMAL_INSTALLATION" == "NO" ] ; then
-    echo
-    echo "Do you want the tools and samples to be built (default is 'yes')?"
-    echo "Hit 'n' + <Enter> for 'no', or just <Enter> for 'yes'."
-    if [ "$USE_DEFAULTS" == "NO" ] ; then
-      read YES_NO
-    else
-      YES_NO=""
-    fi
-    if [ "$YES_NO" == "n" ] || [ "$YES_NO" == "N" ]; then
-      echo
-      echo "The tools and samples were not built."
-      echo "To build them manually run 'make native' in $DEF_DIRECTORY"
-    else
-      cd $DEF_DIRECTORY
-      $SUDO chown -R $USER: $DEF_DIRECTORY
-      make $TARGET
-      if [ $? -ne 0 ]; then
-          let WARNING_NUMBER=WARNING_NUMBER+1
-      fi
-    
-    # Shall the MV Tools be linked in /usr/bin?
-      if [ "$GEV_SUPPORT" == "TRUE" ]; then
-          echo "Do you want to set a link to /usr/bin for wxPropView, mvIPConfigure and mvDeviceConfigure (default is 'yes')?"
-      else
-          echo "Do you want to set a link to /usr/bin for wxPropView and mvDeviceConfigure (default is 'yes')?"
-      fi
+      echo "Do you want the sample applications to be built (default is 'yes')?"
+      echo "A native g++ compiler has to be present on the system!"
       echo "Hit 'n' + <Enter> for 'no', or just <Enter> for 'yes'."
       if [ "$USE_DEFAULTS" == "NO" ] ; then
         read YES_NO
       else
         YES_NO=""
       fi
+      echo
       if [ "$YES_NO" == "n" ] || [ "$YES_NO" == "N" ]; then
-          echo "Will not set any new link to /usr/bin."
+        echo 'The tools and samples were not built.'
+        echo 'To build them yourself, type:'
+        echo '  cd '$DEF_DIRECTORY
+        echo '  make native'
+        echo '  sudo /sbin/ldconfig'
       else
-          if [ -r /usr/bin ]; then
-            # Set wxPropView
-            if [ -r $DEF_DIRECTORY/apps/mvPropView/$TARGET/wxPropView ]; then
-                $SUDO rm -f /usr/bin/wxPropView
-                $SUDO ln -s $DEF_DIRECTORY/apps/mvPropView/$TARGET/wxPropView /usr/bin/wxPropView
-            fi
-            # Set mvIPConfigure
-            if [ "$GEV_SUPPORT" == "TRUE" ]; then
-                if [ -r $DEF_DIRECTORY/apps/mvIPConfigure/$TARGET/mvIPConfigure ]; then
-                    $SUDO rm -f /usr/bin/mvIPConfigure
-                    $SUDO ln -s $DEF_DIRECTORY/apps/mvIPConfigure/$TARGET/mvIPConfigure /usr/bin/mvIPConfigure
+        if [ "$(which g++)" != "" ]; then
+          echo "Do you want the GUI tools to be built (default is 'yes')?"
+          echo "This requires wxWidgets libraries to be present on your system."
+          echo "If they are missing, an attempt will be made to download them."
+          echo "Hit 'n' + <Enter> for 'no', or just <Enter> for 'yes'."
+          if [ "$USE_DEFAULTS" == "NO" ] ; then
+            read YES_NO
+          else
+            YES_NO=""
+          fi
+          echo
+          if [ "$YES_NO" == "n" ] || [ "$YES_NO" == "N" ]; then
+            # remove GUI apps sources since they are not needed
+            rm -rf $DEF_DIRECTORY/apps/mv*
+            rm -rf $DEF_DIRECTORY/apps/Common/FirmwareUpdate_mvHYPERION
+          else
+            # check if wxWidgets are present else download them
+            if [ "$(wx-config --release 2>&1 | grep -c "^3.")" != "1" ] ||
+              [ "$(wx-config --libs 2>&1 | grep -c "webview")" != "1" ] ||
+              [ "$(wx-config --selected-config 2>&1 | grep -c "gtk3")" == "0" ]; then
+              if [ "x$(which apt-get)" != "x" ]; then
+                echo
+                echo "Updating file lists from repositories..."
+                echo
+                $SUDO apt-get update
+                echo
+                echo "Downloading and installing wxWidgets via apt-get..."
+                $SUDO apt-get $APT_GET_EXTRA_PARAMS -q install libwxgtk-webview3.0-gtk3-* libwxgtk3.0-gtk3-* wx3.0-headers build-essential libgtk2.0-dev
+                echo
+                if [ $? == 0 ] && [ "x$(which wx-config)" != "x" ]; then
+                  echo "Necessary wxWidgets libraries installed successfully!"
+                  echo
+                else
+                  echo "wxWidgets libraries could not automatically download and install on this system!"
+                  echo "Please either install wxWidgets libraries manually and re-run this installer script,"
+                  echo "or re-run this script and choose not to build the wxWidgets GUI Tools altogether!"
+                  echo
+                  exit 1
                 fi
+              else
+                echo
+                echo "Could not download wxWidgets, apt-get is missing!"
+                echo
+                echo "wxWidgets libraries could not automatically download and install on this system!"
+                echo "Please either install wxWidgets libraries manually and re-run this installer script,"
+                echo "or re-run this script and choose not to build the wxWidgets GUI Tools altogether!"
+                echo
+                exit 1
+              fi
+              if [ "$(update-alternatives --list wx-config | grep -c "gtk3")" == "1" ]; then
+                echo "Using GTK3 wxWidgets as default during this installation."
+                $SUDO update-alternatives --set wx-config $(update-alternatives --list wx-config | grep gtk3)
+              fi
             fi
-            # Set mvDeviceConfigure
-            if [ -r $DEF_DIRECTORY/apps/mvDeviceConfigure/$TARGET/mvDeviceConfigure ]; then
+            cd $DEF_DIRECTORY
+            $SUDO /sbin/ldconfig
+          fi
+          # build all apps and samples.
+          echo "Building samples and/or tools..."
+          make native
+          if [ $? -ne 0 ]; then
+              let WARNING_NUMBER=WARNING_NUMBER+1
+          fi
+    
+          # Shall the MV tools be linked in /usr/bin?
+          echo "Do you want to set a link to /usr/bin for wxPropView and mvDeviceConfigure (default is 'yes')?"
+          echo "Hit 'n' + <Enter> for 'no', or just <Enter> for 'yes'."
+          if [ "$USE_DEFAULTS" == "NO" ] ; then
+            read YES_NO
+          else
+            YES_NO=""
+          fi
+          if [ "$YES_NO" == "n" ] || [ "$YES_NO" == "N" ]; then
+            echo "Will not set any new link to /usr/bin."
+          else
+            if [ -r /usr/bin ]; then
+              # Set wxPropView
+              if [ -r $DEF_DIRECTORY/apps/mvPropView/$ARM_ARCHITECTURE/wxPropView ]; then
+                $SUDO rm -f /usr/bin/wxPropView
+                $SUDO ln -s $DEF_DIRECTORY/apps/mvPropView/$ARM_ARCHITECTURE/wxPropView /usr/bin/wxPropView
+              fi
+              # Set mvIPConfigure
+              if [ "$GEV_SUPPORT" == "TRUE" ]; then
+                if [ -r $DEF_DIRECTORY/apps/mvIPConfigure/$ARM_ARCHITECTURE/mvIPConfigure ]; then
+                  $SUDO rm -f /usr/bin/mvIPConfigure
+                  $SUDO ln -s $DEF_DIRECTORY/apps/mvIPConfigure/$ARM_ARCHITECTURE/mvIPConfigure /usr/bin/mvIPConfigure
+                fi
+              fi
+              # Set mvDeviceConfigure
+              if [ -r $DEF_DIRECTORY/apps/mvDeviceConfigure/$ARM_ARCHITECTURE/mvDeviceConfigure ]; then
                 $SUDO rm -f /usr/bin/mvDeviceConfigure
-                $SUDO ln -s $DEF_DIRECTORY/apps/mvDeviceConfigure/$TARGET/mvDeviceConfigure /usr/bin/mvDeviceConfigure
+                $SUDO ln -s $DEF_DIRECTORY/apps/mvDeviceConfigure/$ARM_ARCHITECTURE/mvDeviceConfigure /usr/bin/mvDeviceConfigure
+              fi
             fi
           fi
-      fi
-      
-      # Should wxPropView check weekly for updates?
-      echo "Do you want wxPropView to check for updates weekly(default is 'yes')?"
-      echo "Hit 'n' + <Enter> for 'no', or just <Enter> for 'yes'."
-      if [ "$USE_DEFAULTS" == "NO" ] ; then
-        read YES_NO
-      else
-        YES_NO=""
-      fi
-      if [ ! -e ~/.wxPropView ]; then
-        touch ~/.wxPropView
-      fi
-      if [ "$YES_NO" == "n" ] || [ "$YES_NO" == "N" ]; then
-        if [ "$(grep -c AutoCheckForUpdatesWeekly ~/.wxPropView)" -ne "0" ]; then
-          Tweakline=$(( $( grep -n "AutoCheckForUpdatesWeekly" ~/.wxPropView | cut -d: -f1) )) && sed -i "$Tweakline s/.*/AutoCheckForUpdatesWeekly=0/" ~/.wxPropView
+    
+          # Should wxPropView check weekly for updates?
+          echo "Do you want wxPropView to check for updates weekly(default is 'yes')?"
+          echo "Hit 'n' + <Enter> for 'no', or just <Enter> for 'yes'."
+          if [ "$USE_DEFAULTS" == "NO" ] ; then
+            read YES_NO
+          else
+            YES_NO=""
+          fi
+          if [ ! -e ~/.wxPropView ]; then
+            touch ~/.wxPropView
+          fi
+          if [ "$YES_NO" == "n" ] || [ "$YES_NO" == "N" ]; then
+            if [ "$(grep -c AutoCheckForUpdatesWeekly ~/.wxPropView)" -ne "0" ]; then
+              Tweakline=$(( $( grep -n "AutoCheckForUpdatesWeekly" ~/.wxPropView | cut -d: -f1) )) && sed -i "$Tweakline s/.*/AutoCheckForUpdatesWeekly=0/" ~/.wxPropView
+            else
+              echo "AutoCheckForUpdatesWeekly=0" >> ~/.wxPropView
+            fi
+          else
+            if [ "$(grep -c AutoCheckForUpdatesWeekly ~/.wxPropView)" -ne "0" ]; then
+              Tweakline=$(( $( grep -n "AutoCheckForUpdatesWeekly" ~/.wxPropView | cut -d: -f1) )) && sed -i "$Tweakline s/.*/AutoCheckForUpdatesWeekly=1/" ~/.wxPropView
+            else
+              echo "[MainFrame/Help]" >> ~/.wxPropView
+              echo "AutoCheckForUpdatesWeekly=1" >> ~/.wxPropView
+            fi
+          fi
         else
-          echo "AutoCheckForUpdatesWeekly=0" >> ~/.wxPropView
-        fi
-      else
-        if [ "$(grep -c AutoCheckForUpdatesWeekly ~/.wxPropView)" -ne "0" ]; then
-          Tweakline=$(( $( grep -n "AutoCheckForUpdatesWeekly" ~/.wxPropView | cut -d: -f1) )) && sed -i "$Tweakline s/.*/AutoCheckForUpdatesWeekly=1/" ~/.wxPropView
-        else
-          echo "[MainFrame/Help]" >> ~/.wxPropView
-          echo "AutoCheckForUpdatesWeekly=1" >> ~/.wxPropView
+          echo "Sample applications and/or GUI tools cannot be built, as the system is missing a g++ compiler!"
         fi
       fi
     fi
@@ -1097,10 +1021,15 @@ if [ "$PCIE_SUPPORT" == "TRUE" ]; then
       if [ "$OS_NAME" == "Ubuntu" ] || [ "$OS_NAME" == "Debian" ]; then
         if which apt-get >/dev/null 2>&1; then
           $SUDO apt-get update
+          if [ -n $JETSON_KERNEL ]; then
+              HEADERS_PKG=nvidia-l4t-kernel-headers
+          else
+              HEADERS_PKG=linux-headers-$KERNEL_VERSION
+          fi
           echo 'Installing Linux kernel headers'
-          $SUDO apt-get $APT_GET_EXTRA_PARAMS -q install linux-headers-$KERNEL_VERSION
+          $SUDO apt-get $APT_GET_EXTRA_PARAMS -q install $HEADERS_PKG
         else
-          printf "$COULD_NOT_INSTALL" "linux-headers-$KERNEL_VERSION"
+          printf "$COULD_NOT_INSTALL" "linux-headers package"
           let WARNING_NUMBER=WARNING_NUMBER+1
         fi
       elif [ "$OS_NAME" == "SuSE" ] ; then
@@ -1186,9 +1115,6 @@ if [ "$PCIE_SUPPORT" == "TRUE" ]; then
     fi
 fi
 
-# Update the library cache again.
-$SUDO /sbin/ldconfig
-
 # copy the mvBF3 boot-device and an universal udev rules file for U3V cameras to the system 
 if [ "$U3V_SUPPORT" == "TRUE" ]; then
     echo
@@ -1263,8 +1189,9 @@ else
     fi
     if [ "$YES_NO" == "n" ] || [ "$YES_NO" == "N" ]; then
       echo
-      echo "If you want to use U3V devices you have to manually add user '"$USER"' to the plugdev group."
+	  echo "If you want to use U3V devices you have to manually add user '"$USER"' to the plugdev group."	
       let WARNING_NUMBER=WARNING_NUMBER+1
+      
     else
       $SUDO /usr/sbin/usermod -a -G plugdev $USER
       echo "User '"$USER"' added to 'plugdev' group."
@@ -1393,14 +1320,6 @@ else
   let WARNING_NUMBER=WARNING_NUMBER+1
 fi
 
-# Set the necessary cti softlinks
-if [ "$GEV_SUPPORT" == "TRUE" ] || [ "$U3V_SUPPORT" == "TRUE" ]; then
-  createSoftlink $DEF_DIRECTORY/lib/$TARGET libmvGenTLProducer.so mvGenTLProducer.cti
-fi
-if [ "$PCIE_SUPPORT" == "TRUE" ]; then
-  createSoftlink $DEF_DIRECTORY/lib/$TARGET libmvGenTLProducer.PCIe.so mvGenTLProducer.PCIe.cti
-fi
-
 if [ "$MINIMAL_INSTALLATION" == "NO" ] ; then
   # A bunch of actions necessary if GEV support is enabled
   if [ "$GEV_SUPPORT" == "TRUE" ]; then
@@ -1408,9 +1327,9 @@ if [ "$MINIMAL_INSTALLATION" == "NO" ] ; then
     $SUDO setcap cap_net_raw+ep $(which arping)>/dev/null 2>&1
     
     # Ensure the necessary capabilities for mv applications are set.
-    $SUDO setcap cap_net_bind_service,cap_net_raw+ep $DEF_DIRECTORY/apps/mvPropView/$TARGET/wxPropView
-    $SUDO setcap cap_net_bind_service,cap_net_raw+ep $DEF_DIRECTORY/apps/mvIPConfigure/$TARGET/mvIPConfigure
-    $SUDO setcap cap_net_bind_service,cap_net_raw+ep $DEF_DIRECTORY/apps/mvDeviceConfigure/$TARGET/mvDeviceConfigure
+    $SUDO setcap cap_net_bind_service,cap_net_raw+ep $DEF_DIRECTORY/apps/mvPropView/$ARM_ARCHITECTURE/wxPropView 
+    $SUDO setcap cap_net_bind_service,cap_net_raw+ep $DEF_DIRECTORY/apps/mvIPConfigure/$ARM_ARCHITECTURE/mvIPConfigure
+    $SUDO setcap cap_net_bind_service,cap_net_raw+ep $DEF_DIRECTORY/apps/mvDeviceConfigure/$ARM_ARCHITECTURE/mvDeviceConfigure
     
     # Increase the network buffers to prevent incomplete frames
     echo 'net.core.wmem_max=4194304' > /tmp/62-buffers-performance.conf
@@ -1491,20 +1410,20 @@ if [ "$MINIMAL_INSTALLATION" == "NO" ] ; then
         echo "Currently configured: ${SYSTEMS_USBFS_MEMORY_MB_VALUE} MB"
         echo "Total available RAM:  ${SYSTEMS_MEMORY_TOTAL_MB} MB"
         echo
-        echo "Please specify the amount of memory (in Megabyte) which should be reserved for USB data"
+        echo "Please specify the amount (in Megabyte) of memory which should be reserved for USB data"
         read USER_SELECTED_MEMORY
         if [ "$SYSTEMS_MEMORY_TOTAL_MB" -gt "$USER_SELECTED_MEMORY" ]; then
             USBFS_MEMORY_MB_VALUE=$USER_SELECTED_MEMORY
         elif [ $? -ne 0 ]; then
-            USBFS_MEMORY_MB_VALUE=256 
+            USBFS_MEMORY_MB_VALUE=128 
             echo "Error! Invalid value passed. Will use default value: ${USBFS_MEMORY_MB_VALUE} MB"
         else
-            USBFS_MEMORY_MB_VALUE=256 
+            USBFS_MEMORY_MB_VALUE=128 
             echo "Error! Specified memory is more than the system's total memory!"
             echo "Configuring to the default value of: ${USBFS_MEMORY_MB_VALUE} MB"
         fi
       else
-        USBFS_MEMORY_MB_VALUE=256
+        USBFS_MEMORY_MB_VALUE=128
       fi
       echo "Configuring usbcore.usbfs_memory_mb automatically to use: ${USBFS_MEMORY_MB_VALUE} MB for"
       echo "USB traffic"
@@ -1607,7 +1526,7 @@ WantedBy=multi-user.target
          ERROR=1
       else
          USBMEM=$(cat /sys/module/usbcore/parameters/usbfs_memory_mb)
-         if [ $USBMEM -lt 256 ] && [ ! $USBFS_CONFIGURED_PER_SYSTEMD="YES" ]; then
+         if [ $USBMEM -lt 128 ]  && [ ! $USBFS_CONFIGURED_PER_SYSTEMD="YES" ]; then
              echo "Warning: 'usbfs_memory_mb' Kernel USB file system buffer settings are low($USBMEM MB)!"
              echo "Incomplete frames may occur during image acquisition!"
              ERROR=1
@@ -1642,7 +1561,7 @@ fi
 echo "Resetting wxWidgets configuration to the auto default."
 $SUDO update-alternatives --auto wx-config
 
-echo
+rm -f $SCRIPTSOURCEDIR/0
 source $GENICAM_EXPORT_FILE
 echo
 echo
@@ -1685,3 +1604,5 @@ if [ "$YES_NO" == "n" ] || [ "$YES_NO" == "N" ]; then
 else
    $SUDO shutdown -r now
 fi
+
+
