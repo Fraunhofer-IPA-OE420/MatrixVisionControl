@@ -25,7 +25,6 @@ RUN apt-get -y install build-essential iproute2
 #RUN mkdir /var/lib/mvIMPACT_Acquire
 # move the directory mvIMPACT_Acquire with *.tgz and *.sh files to the container
 COPY mvIMPACT_Acquire/install_mvGenTL_Acquire.sh /var/lib/mvIMPACT_Acquire/install_mvGenTL_Acquire.sh
-#COPY mvIMPACT_Acquire/mvGenTL_Acquire-x86_64_ABI2-2.45.0.tgz /var/lib/mvIMPACT_Acquire/mvGenTL_Acquire-x86_64_ABI2-2.45.0.tgz
 COPY mvIMPACT_Acquire/mvGenTL_Acquire-ARM64_gnu-2.45.0.tgz /var/lib/mvIMPACT_Acquire/mvGenTL_Acquire-ARM64_gnu-2.45.0.tgz
 
 # execute the setup script in an unattended mode
