@@ -25,7 +25,7 @@ KERNEL_VERSION="5.10.63-v8+"
 OS_VERSION="11.1"
 OS_NAME="Debian"
 OS_CODENAME="unknown"
-VERSION="2.45.0"
+VERSION="-ARM64_gnu-2.45.0"
 ######
 
 # Define a variable for the ErrorCount and WarningCount and an array for both to summarize the kind of issue
