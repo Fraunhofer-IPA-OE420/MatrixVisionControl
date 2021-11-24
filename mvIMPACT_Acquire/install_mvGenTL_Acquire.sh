@@ -1,5 +1,5 @@
 #!/bin/bash
-TARGET=undefined
+TARGET=ARM64
 TARGET_UNCAPITALIZED=undefined
 DEF_DIRECTORY=/opt/mvIMPACT_Acquire
 DEF_DATA_DIRECTORY=${MVIMPACT_ACQUIRE_DATA_DIR:-/opt/mvIMPACT_Acquire/data}
@@ -370,6 +370,8 @@ fi
 # A quick check whether the Version has a correct format (due to other files being in the same directory..?)
 if [ "$(echo $VERSION | grep -c '^[0-9]\{1,2\}\.[0-9]\{1,2\}\.[0-9]\{1,2\}')" == "0" ]; then
   echo "-----------------------------------------------------------------------------------"
+  echo $TARGET
+  echo $VERSION
   echo "${red}  ABORTING: Script could not determine a valid mvIMPACT Acquire *.tgz file!  " 
   echo "${reset}-----------------------------------------------------------------------------------"
   echo "  This script could not extract a valid version number from the *.tgz file"
