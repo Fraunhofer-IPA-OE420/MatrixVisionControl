@@ -76,7 +76,7 @@ INIT_SYSTEM=$(ps --no-headers -o comm 1)
 # Determine OS Name, version and Kernel version
 function check_distro_and_version()
 {
-  echo "etermine OS Name, version and Kernel version done in constant"
+  echo "determine OS Name, version and Kernel version done in constant"
   #if [ -f /etc/fedora-release ] ; then
    # OS_NAME='Fedora'
    # OS_VERSION=`cat /etc/redhat-release | sed s/.*release\ // | sed s/\ .*//`
