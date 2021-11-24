@@ -11,10 +11,17 @@ USE_DEFAULTS=NO
 UNATTENDED_INSTALLATION=NO
 MINIMAL_INSTALLATION=NO
 APT_GET_EXTRA_PARAMS=
-OS_NAME="unknown"
-OS_VERSION="unknown"
+#OS_NAME="unknown"
+#OS_VERSION="unknown"
+#OS_CODENAME="unknown"
+#KERNEL_VERSION="unknown"
+
+##Changes
+TARGET="aarch64"
+KERNEL_VERSION="5.10.63-v8+"
+OS_VERSION="11.1"
+OS_NAME= "Debian"
 OS_CODENAME="unknown"
-KERNEL_VERSION=5.10.63-v8+
 
 # Define a variable for the ErrorCount and WarningCount and an array for both to summarize the kind of issue
 let ERROR_NUMBER=0
@@ -250,7 +257,9 @@ fi
 check_distro_and_version
 
 # Get the targets platform and if it is called "i686" we know it is a x86 system, else it s x86_64
-TARGET=$(uname -m)
+#TARGET=$(uname -m)
+
+
 if [ "$TARGET" == "i686" ]; then
    TARGET="x86"
 fi
@@ -318,18 +327,16 @@ if [ "$TARGET" == "x86" ]; then
 fi
 
 # A quick check whether the Version has a correct format (due to other files being in the same directory..?)
- if [ "$(echo $VERSION | grep -c '^[0-9]\{1,2\}\.[0-9]\{1,2\}\.[0-9]\{1,2\}')" == "0" ]; then
+if [ "$(echo $VERSION | grep -c '^[0-9]\{1,2\}\.[0-9]\{1,2\}\.[0-9]\{1,2\}')" == "0" ]; then
   echo "-----------------------------------------------------------------------------------"
   echo "${red}  ABORTING: Script could not determine a valid mvIMPACT Acquire *.tgz file!  " 
   echo "${reset}-----------------------------------------------------------------------------------"
-  cho "  Traget Version" $TARGET
-  echo "  Traget Version" $VERSION
   echo "  This script could not extract a valid version number from the *.tgz file"
   echo "  This script determined $TARFILE as the file containing the installation data."
   echo "  It is recommended that only this script and the correct *.tgz file reside in this directory."
   echo "  Please remove all other files and try again."
   exit
- fi
+fi
 
 # A quick check whether the user has been determined
 if [ "$USER" == "" ]; then
