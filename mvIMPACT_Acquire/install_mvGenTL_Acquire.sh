@@ -308,7 +308,7 @@ fi
 if [ "$( ls | grep -c 'mvGenTL_Acquire.*\.tgz' )" != "0" ] ; then
   TARNAME=`ls mvGenTL_Acquire*.tgz | tail -n 1 | sed -e s/\\.tgz//`
   TARFILE=`ls mvGenTL_Acquire*.tgz | tail -n 1`
-  #VERSION=`ls mvGenTL_Acquire*.tgz | tail -n 1 | sed -e s/\\mvGenTL_Acquire// | sed -e s/\\-$TARGET// | sed -e s/\\_ABI2-// | sed -e s/\\.tgz//` 
+  VERSION=`ls mvGenTL_Acquire*.tgz | tail -n 1 | sed -e s/\\mvGenTL_Acquire// | sed -e s/\\-$TARGET// | sed -e s/\\_gnu-// | sed -e s/\\.tgz//` 
   ACT2=$API-$VERSION
   ACT=$API-$TARGET-$VERSION
 fi
