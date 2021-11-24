@@ -1,6 +1,6 @@
 # start with slim version of actual Debian
-FROM ubuntu:latest
-#debian:9-slim
+FROM FROM phusion/baseimage:master
+
 ENV LC_ALL C
 ENV DEBIAN_FRONTEND noninteractive
 
