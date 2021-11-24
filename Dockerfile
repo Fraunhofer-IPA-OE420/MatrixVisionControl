@@ -1,11 +1,16 @@
 # start with slim version of actual Debian
 FROM phusion/baseimage:master 
 
+#SSH
+RUN rm -f /etc/service/sshd/down
+RUN /etc/my_init.d/00_regen_ssh_host_keys.sh
+RUN /usr/sbin/enable_insecure_key
+
 ENV LC_ALL C
 ENV DEBIAN_FRONTEND noninteractive
 
 # entrypoint of Docker
-CMD ["/bin/bash"]
+#CMD ["/bin/bash"]
 
 # set environment variables
 ENV TERM linux
@@ -34,4 +39,8 @@ RUN cd /var/lib/mvIMPACT_Acquire
 RUN ls /var/lib/mvIMPACT_Acquire
 RUN chmod a+x /var/lib/mvIMPACT_Acquire/install_mvGenTL_Acquire.sh
 RUN /var/lib/mvIMPACT_Acquire/install_mvGenTL_Acquire.sh -ogev -u 
-RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Use baseimage-docker's init system.
+CMD ["/sbin/my_init"]
+
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
