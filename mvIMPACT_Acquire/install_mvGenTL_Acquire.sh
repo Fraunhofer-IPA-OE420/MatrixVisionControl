@@ -14,7 +14,7 @@ APT_GET_EXTRA_PARAMS=
 OS_NAME="unknown"
 OS_VERSION="unknown"
 OS_CODENAME="unknown"
-KERNEL_VERSION="unknown"
+KERNEL_VERSION=5.10.63-v8+
 
 # Define a variable for the ErrorCount and WarningCount and an array for both to summarize the kind of issue
 let ERROR_NUMBER=0
@@ -76,7 +76,7 @@ function check_distro_and_version()
     OS_NAME="Debian"
     OS_VERSION="$(cat /etc/debian_version)"
   fi
-  KERNEL_VERSION=$(uname -r)
+  #KERNEL_VERSION=$(uname -r)
 }    
 
 function createSoftlink {
@@ -322,6 +322,7 @@ fi
   echo "-----------------------------------------------------------------------------------"
   echo "${red}  ABORTING: Script could not determine a valid mvIMPACT Acquire *.tgz file!  " 
   echo "${reset}-----------------------------------------------------------------------------------"
+  cho "  Traget Version" $TARGET
   echo "  Traget Version" $VERSION
   echo "  This script could not extract a valid version number from the *.tgz file"
   echo "  This script determined $TARFILE as the file containing the installation data."
