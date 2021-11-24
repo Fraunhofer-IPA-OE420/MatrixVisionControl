@@ -76,26 +76,26 @@ INIT_SYSTEM=$(ps --no-headers -o comm 1)
 # Determine OS Name, version and Kernel version
 function check_distro_and_version()
 {
-  if [ -f /etc/fedora-release ] ; then
+  #if [ -f /etc/fedora-release ] ; then
    # OS_NAME='Fedora'
    # OS_VERSION=`cat /etc/redhat-release | sed s/.*release\ // | sed s/\ .*//`
-  elif [ -f /etc/redhat-release ] ; then
+  #elif [ -f /etc/redhat-release ] ; then
   # OS_NAME='RedHat'
   #  OS_VERSION=`cat /etc/redhat-release | sed s/.*release\ // | sed s/\ .*//`
-  elif [ -f /etc/SuSE-release ] ; then
+  #elif [ -f /etc/SuSE-release ] ; then
    # OS_NAME='SuSE'
    # OS_VERSION=`cat /etc/SuSE-release | tr "\n" ' ' | sed s/.*=\ //`
-  elif [ -f /etc/mandrake-release ] ; then
+  #elif [ -f /etc/mandrake-release ] ; then
   #  OS_NAME='Mandrake'
   #  OS_VERSION=`cat /etc/mandrake-release | sed s/.*release\ // | sed s/\ .*//`
-  elif [ -x /usr/bin/lsb_release ] ; then
+  #elif [ -x /usr/bin/lsb_release ] ; then
   #  OS_NAME="$(lsb_release -is)" #Ubuntu
   #  OS_VERSION="$(lsb_release -rs)"
   #  OS_CODENAME="$(lsb_release -cs)"
-  elif [ -f /etc/debian_version ] ; then
+  #elif [ -f /etc/debian_version ] ; then
   #  OS_NAME="Debian"
   #  OS_VERSION="$(cat /etc/debian_version)"
-  fi
+  #fi
   #KERNEL_VERSION=$(uname -r)
   #JETSON_KERNEL=$(uname -r | grep tegra)
 }    
