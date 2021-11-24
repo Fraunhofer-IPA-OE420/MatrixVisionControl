@@ -1,5 +1,5 @@
 # start with slim version of actual Debian
-FROM FROM phusion/baseimage:master
+FROM phusion/baseimage:master
 
 ENV LC_ALL C
 ENV DEBIAN_FRONTEND noninteractive
