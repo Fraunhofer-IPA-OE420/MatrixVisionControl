@@ -34,7 +34,6 @@ RUN ls /var/lib/mvIMPACT_Acquire
 RUN chmod a+x /var/lib/mvIMPACT_Acquire/install_mvGenTL_Acquire.sh
 RUN /var/lib/mvIMPACT_Acquire/install_mvGenTL_Acquire.sh -ogev -u 
 
-
 # Use baseimage-docker's init system.
 CMD ["/sbin/my_init"]
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
