@@ -1,5 +1,6 @@
 # start with slim version of actual Debian
-FROM debian:9-slim
+FROM balenalib/amd64-alpine-python
+#debian:9-slim
 ENV LC_ALL C
 ENV DEBIAN_FRONTEND noninteractive
 
