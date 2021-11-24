@@ -26,7 +26,7 @@ APT_GET_EXTRA_PARAMS=
 
 ##Changes IPA
 # get target name: type in bash in raspberry host "uname -m"
-ARM_ARCHITECTUR="ARM64"
+ARM_ARCHITECTUR="aarch64"
 # get kernel version: type in bash in raspberry host "uname -r"
 KERNEL_VERSION="5.10.63-v8+"
 OS_VERSION="11.1"
@@ -77,27 +77,27 @@ INIT_SYSTEM=$(ps --no-headers -o comm 1)
 function check_distro_and_version()
 {
   if [ -f /etc/fedora-release ] ; then
-    OS_NAME='Fedora'
-    OS_VERSION=`cat /etc/redhat-release | sed s/.*release\ // | sed s/\ .*//`
+   # OS_NAME='Fedora'
+   # OS_VERSION=`cat /etc/redhat-release | sed s/.*release\ // | sed s/\ .*//`
   elif [ -f /etc/redhat-release ] ; then
-    OS_NAME='RedHat'
-    OS_VERSION=`cat /etc/redhat-release | sed s/.*release\ // | sed s/\ .*//`
+  # OS_NAME='RedHat'
+  #  OS_VERSION=`cat /etc/redhat-release | sed s/.*release\ // | sed s/\ .*//`
   elif [ -f /etc/SuSE-release ] ; then
-    OS_NAME='SuSE'
-    OS_VERSION=`cat /etc/SuSE-release | tr "\n" ' ' | sed s/.*=\ //`
+   # OS_NAME='SuSE'
+   # OS_VERSION=`cat /etc/SuSE-release | tr "\n" ' ' | sed s/.*=\ //`
   elif [ -f /etc/mandrake-release ] ; then
-    OS_NAME='Mandrake'
-    OS_VERSION=`cat /etc/mandrake-release | sed s/.*release\ // | sed s/\ .*//`
+  #  OS_NAME='Mandrake'
+  #  OS_VERSION=`cat /etc/mandrake-release | sed s/.*release\ // | sed s/\ .*//`
   elif [ -x /usr/bin/lsb_release ] ; then
-    OS_NAME="$(lsb_release -is)" #Ubuntu
-    OS_VERSION="$(lsb_release -rs)"
-    OS_CODENAME="$(lsb_release -cs)"
+  #  OS_NAME="$(lsb_release -is)" #Ubuntu
+  #  OS_VERSION="$(lsb_release -rs)"
+  #  OS_CODENAME="$(lsb_release -cs)"
   elif [ -f /etc/debian_version ] ; then
-    OS_NAME="Debian"
-    OS_VERSION="$(cat /etc/debian_version)"
+  #  OS_NAME="Debian"
+  #  OS_VERSION="$(cat /etc/debian_version)"
   fi
-  KERNEL_VERSION=$(uname -r)
-  JETSON_KERNEL=$(uname -r | grep tegra)
+  #KERNEL_VERSION=$(uname -r)
+  #JETSON_KERNEL=$(uname -r | grep tegra)
 }    
 
 function createSoftlink {
