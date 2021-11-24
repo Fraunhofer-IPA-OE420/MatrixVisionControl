@@ -322,6 +322,7 @@ if [ "$(echo $VERSION | grep -c '^[0-9]\{1,2\}\.[0-9]\{1,2\}\.[0-9]\{1,2\}')" ==
   echo "-----------------------------------------------------------------------------------"
   echo "${red}  ABORTING: Script could not determine a valid mvIMPACT Acquire *.tgz file!  " 
   echo "${reset}-----------------------------------------------------------------------------------"
+  echo "  Traget Version" $VERSION
   echo "  This script could not extract a valid version number from the *.tgz file"
   echo "  This script determined $TARFILE as the file containing the installation data."
   echo "  It is recommended that only this script and the correct *.tgz file reside in this directory."
