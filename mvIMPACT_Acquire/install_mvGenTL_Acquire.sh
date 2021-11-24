@@ -16,12 +16,17 @@ APT_GET_EXTRA_PARAMS=
 #OS_CODENAME="unknown"
 #KERNEL_VERSION="unknown"
 
-##Changes
+##Changes IPA
+
+# get target name: type in bash in raspberry host "uname -m"
 TARGET="aarch64"
+# get kernel version: type in bash in raspberry host "uname -r"
 KERNEL_VERSION="5.10.63-v8+"
 OS_VERSION="11.1"
-OS_NAME= "Debian"
+OS_NAME="Debian"
 OS_CODENAME="unknown"
+VERSION="2.45.0"
+######
 
 # Define a variable for the ErrorCount and WarningCount and an array for both to summarize the kind of issue
 let ERROR_NUMBER=0
@@ -129,60 +134,6 @@ echo " MMMMM       MMMMM       MMMMM     MMMMM  M   M  M  ,M  M   M   M   M   M 
 echo "                                   M   M  'MMM'   MMMM, 'MMM'  MMM  M   M  MMMM"
 echo "===============================================================================" 
 sleep 1
-
-
-
-
-
-
-
-
-
-
-
-
-echo "-----------------------------------------------------------------------------------"
-echo "${bold}Host System:${reset}"
-echo "-----------------------------------------------------------------------------------"
-echo
-echo "${bold}OS:                             ${reset}"$OS_NAME
-echo "${bold}OS Version:                     ${reset}"$OS_VERSION
-echo "${bold}OS Codename:                    ${reset}"$OS_CODENAME
-echo "${bold}Kernel:                         ${reset}"$KERNEL_VERSION
-echo "${bold}Platform:                       ${reset}"$TARGET
-echo
-echo "-----------------------------------------------------------------------------------"
-echo "${bold}Configuration:${reset}"
-echo "-----------------------------------------------------------------------------------"
-echo
-echo "${bold}Installation for user:            ${reset}"$USER
-echo "${bold}Installation directory:           ${reset}"$DEF_DIRECTORY
-echo "${bold}Data directory:                   ${reset}"$DEF_DATA_DIRECTORY
-echo "${bold}Source directory:                 ${reset}"$(echo $SCRIPTSOURCEDIR | sed -e 's/\/\.//')
-echo "${bold}Version:                          ${reset}"$VERSION
-echo "${bold}TAR-File:                         ${reset}"$TARFILE
-echo
-echo "${bold}ldconfig:"
-echo "${bold}GenICam:                        ${reset}"$GENICAM_LDSOCONF_FILE
-echo "${bold}mvIMPACT_acquire:               ${reset}"$ACQUIRE_LDSOCONF_FILE
-echo
-echo "${bold}Exports:"
-echo "${bold}GenICam:                        ${reset}"$GENICAM_EXPORT_FILE
-echo "${bold}mvIMPACT_acquire:               ${reset}"$ACQUIRE_EXPORT_FILE
-echo 
-echo "-----------------------------------------------------------------------------------"
-
-
-
-
-
-
-
-
-
-
-
-
 
 # Analyze the command line arguments and react accordingly
 PATH_EXPECTED=NO
@@ -357,7 +308,7 @@ fi
 if [ "$( ls | grep -c 'mvGenTL_Acquire.*\.tgz' )" != "0" ] ; then
   TARNAME=`ls mvGenTL_Acquire*.tgz | tail -n 1 | sed -e s/\\.tgz//`
   TARFILE=`ls mvGenTL_Acquire*.tgz | tail -n 1`
-  VERSION=`ls mvGenTL_Acquire*.tgz | tail -n 1 | sed -e s/\\mvGenTL_Acquire// | sed -e s/\\-$TARGET// | sed -e s/\\_ABI2-// | sed -e s/\\.tgz//` 
+  #VERSION=`ls mvGenTL_Acquire*.tgz | tail -n 1 | sed -e s/\\mvGenTL_Acquire// | sed -e s/\\-$TARGET// | sed -e s/\\_ABI2-// | sed -e s/\\.tgz//` 
   ACT2=$API-$VERSION
   ACT=$API-$TARGET-$VERSION
 fi
