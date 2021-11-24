@@ -19,13 +19,13 @@ APT_GET_EXTRA_PARAMS=
 ##Changes IPA
 
 # get target name: type in bash in raspberry host "uname -m"
-TARGET=aarch64
+TARGET="ARM64"
 # get kernel version: type in bash in raspberry host "uname -r"
-KERNEL_VERSION=5.10.63-v8+
-OS_VERSION=11.1
-OS_NAME=Debian
+KERNEL_VERSION="5.10.63-v8+"
+OS_VERSION="11.1"
+OS_NAME="Debian"
 OS_CODENAME="unknown"
-VERSION=2.45.0
+VERSION="2.45.0"
 ######
 
 # Define a variable for the ErrorCount and WarningCount and an array for both to summarize the kind of issue
@@ -308,7 +308,7 @@ fi
 if [ "$( ls | grep -c 'mvGenTL_Acquire.*\.tgz' )" != "0" ] ; then
   TARNAME=`ls mvGenTL_Acquire*.tgz | tail -n 1 | sed -e s/\\.tgz//`
   TARFILE=`ls mvGenTL_Acquire*.tgz | tail -n 1`
-  VERSION=`ls mvGenTL_Acquire*.tgz | tail -n 1 | sed -e s/\\mvGenTL_Acquire// | sed -e s/\\-$TARGET// | sed -e s/\\_gnu-// | sed -e s/\\.tgz//` 
+  #VERSION=`ls mvGenTL_Acquire*.tgz | tail -n 1 | sed -e s/\\mvGenTL_Acquire// | sed -e s/\\-$TARGET// | sed -e s/\\_gnu-// | sed -e s/\\.tgz//` 
   ACT2=$API-$VERSION
   ACT=$API-$TARGET-$VERSION
 fi
