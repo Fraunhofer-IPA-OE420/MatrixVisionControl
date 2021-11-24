@@ -5,7 +5,7 @@ FROM phusion/baseimage:master
 ENV TERM linux
 ENV MVIMPACT_ACQUIRE_DIR /opt/mvIMPACT_Acquire
 ENV MVIMPACT_ACQUIRE_DATA_DIR /opt/mvIMPACT_Acquire/data
-ENV GENICAM_GENTL64_PATH /opt/mvIMPACT_Acquire/lib/x86_64
+ENV GENICAM_GENTL64_PATH /opt/mvIMPACT_Acquire/lib/arm64
 ENV GENICAM_ROOT /opt/mvIMPACT_Acquire/runtime
 ENV container docker
 ENV LC_ALL C
