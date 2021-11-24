@@ -318,17 +318,17 @@ if [ "$TARGET" == "x86" ]; then
 fi
 
 # A quick check whether the Version has a correct format (due to other files being in the same directory..?)
-# if [ "$(echo $VERSION | grep -c '^[0-9]\{1,2\}\.[0-9]\{1,2\}\.[0-9]\{1,2\}')" == "0" ]; then
-#  echo "-----------------------------------------------------------------------------------"
-#  echo "${red}  ABORTING: Script could not determine a valid mvIMPACT Acquire *.tgz file!  " 
-#  echo "${reset}-----------------------------------------------------------------------------------"
-#  echo "  Traget Version" $VERSION
-#  echo "  This script could not extract a valid version number from the *.tgz file"
-#  echo "  This script determined $TARFILE as the file containing the installation data."
-#  echo "  It is recommended that only this script and the correct *.tgz file reside in this directory."
-#  echo "  Please remove all other files and try again."
-#  exit
-# fi
+ if [ "$(echo $VERSION | grep -c '^[0-9]\{1,2\}\.[0-9]\{1,2\}\.[0-9]\{1,2\}')" == "0" ]; then
+  echo "-----------------------------------------------------------------------------------"
+  echo "${red}  ABORTING: Script could not determine a valid mvIMPACT Acquire *.tgz file!  " 
+  echo "${reset}-----------------------------------------------------------------------------------"
+  echo "  Traget Version" $VERSION
+  echo "  This script could not extract a valid version number from the *.tgz file"
+  echo "  This script determined $TARFILE as the file containing the installation data."
+  echo "  It is recommended that only this script and the correct *.tgz file reside in this directory."
+  echo "  Please remove all other files and try again."
+  exit
+ fi
 
 # A quick check whether the user has been determined
 if [ "$USER" == "" ]; then
