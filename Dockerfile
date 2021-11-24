@@ -1,5 +1,5 @@
 # start with slim version of actual Debian
-FROM --platform=linux/arm64  phusion/baseimage:master 
+FROM --platform=linux/arm64 phusion/baseimage:master 
 
 
 # set environment variables
