@@ -52,3 +52,14 @@ Comment out the line
 #ACT=$API-$VERSION.tar
 ```
 
+#Start the Docker Container
+Insert the command
+```
+sudo docker run -ti --net=host --name matrixvision3 ghcr.io/fraunhofer-ipa-oe420/matrixvisioncontrol:main
+```
+To use a simple example application, type in
+```
+$ cd /opt/mvIMPACT_Acquire/apps/SingleCapture/arm64
+$ ./SingleCapture
+```
+be sure to use the ARM application with the file ending arm64.
