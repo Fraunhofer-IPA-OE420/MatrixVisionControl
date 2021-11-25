@@ -1521,7 +1521,41 @@ WantedBy=multi-user.target
         echo "-----------------------------------------------------------------------------------"
      fi
   fi
-  
+
+  # Check whether the USBFS Memory is configured
+  if [ "$U3V_SUPPORT" == "TRUE" ]; then
+  ERROR=0
+  echo "------------------------------------U3V Check--------------------------------------"
+      if [ ! -r /sys/module/usbcore/parameters/usbfs_memory_mb ]; then
+         echo "Warning: 'usbfs_memory_mb' parameter does not exist or cannot be read!"
+         ERROR=1
+      else
+         USBMEM=$(cat /sys/module/usbcore/parameters/usbfs_memory_mb)
+         if [ $USBMEM -lt 128 ]  && [ ! $USBFS_CONFIGURED_PER_SYSTEMD="YES" ]; then
+             echo "Warning: 'usbfs_memory_mb' Kernel USB file system buffer settings are low($USBMEM MB)!"
+             echo "Incomplete frames may occur during image acquisition!"
+             ERROR=1
+          fi
+     fi
+     if [ $ERROR == 1 ]; then
+         let WARNING_NUMBER=WARNING_NUMBER+1
+         echo
+         echo "Please refer to 'Quickstart/Linux/Optimizing USB performance' section of the "
+         echo "User Manual for more information on how to adjust the kernel USB buffers"
+         echo
+         echo "https://www.matrix-vision.com/manuals/mvBlueFOX3/index.html"
+         echo " -> Troubleshooting"
+         echo "  -> USB3.0 Issues"
+         echo "   -> How can I improve the USB 3.0 enviroment?"
+         echo "    -> Checklist for Linux"
+         echo "     -> Kernel memory"
+         echo "-----------------------------------------------------------------------------------"
+     else
+        echo "${green}${bold}                                       OK!${reset}                                         "
+        echo "-----------------------------------------------------------------------------------"
+     fi
+  fi
+fi
 
 # remove all example application sources in case of minimal installation 
 if [ "$MINIMAL_INSTALLATION" == "YES" ] ; then
