@@ -7,7 +7,7 @@ Download install files for ARM from webpage and store them in a folder named mvI
 Be sure that every file and the Dockerfile point to an ARM device and not a Linux PC
 <br>
 Open a bash and check the following parameters:
-<br>ARM architecture:   uname -m
+<br>ARM architecture:   &nbsp;uname -m
 <br>Kernel version:     uname -r
 <br>OS version:         lsb_release -a
 <br>OS name:            lsb_release -a
