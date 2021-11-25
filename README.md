@@ -3,6 +3,7 @@ automatic control of the matrixVision Camera mvBlueCOUGAR-XT
 
 #Install Docker Container
 Download install files for ARM from webpage and store them in a folder named mvIMPACT_Acquire. Create a Dockerfile and be sure that it is optimzed on a ARM device.
+<br>
 Be sure that every file and the Dockerfile point to an ARM device and not a Linux PC
 
 Open a bash and check the following parameters:
