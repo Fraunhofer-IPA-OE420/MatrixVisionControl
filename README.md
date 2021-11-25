@@ -8,9 +8,9 @@ Be sure that every file and the Dockerfile point to an ARM device and not a Linu
 <br>
 Open a bash and check the following parameters:
 <br>ARM architecture:   &emsp;uname -m
-<br>Kernel version:     uname -r
-<br>OS version:         lsb_release -a
-<br>OS name:            lsb_release -a
+<br>Kernel version:     &emsp;uname -r
+<br>OS version:         &emsp;lsb_release -a
+<br>OS name:            &emsp;lsb_release -a
 <br>
 <br>
 Open the sh file and take the following adjustments, according to the results in the bash. The results printed here are from a Raspi3.
