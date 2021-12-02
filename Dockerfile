@@ -38,8 +38,8 @@ RUN /var/lib/mvIMPACT_Acquire/install_mvGenTL_Acquire.sh -ogev -u
 RUN apt-get install python3-distutils
 RUN apt-get install python3.8-dev
 RUN apt-get install libpython3.8-dev
-RUN nice -n -8 python3 setup.py build
-RUN python3 setup.py install
+RUN nice -n -8 python3 /opt/mvIMPACT_Acquire/LanguageBindings/Python/setup.py build
+RUN python3 /opt/mvIMPACT_Acquire/LanguageBindings/Python/setup.py install
 #----------------------------------------------
 
 # Use baseimage-docker's init system.
