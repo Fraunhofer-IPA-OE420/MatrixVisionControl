@@ -33,6 +33,16 @@ RUN ls /var/lib/mvIMPACT_Acquire
 RUN chmod a+x /var/lib/mvIMPACT_Acquire/install_mvGenTL_Acquire.sh
 RUN /var/lib/mvIMPACT_Acquire/install_mvGenTL_Acquire.sh -ogev -u 
 
+#----------------------------------------------
+# python SDK
+RUN apt install python3-dev
+RUN apt-get install python3-distutils
+RUN apt-get install python3.8-dev
+RUN apt install libpython3.8-dev
+RUN nice -n -8 python3 setup.py build
+RUN python3 setup.py install
+#----------------------------------------------
+
 # Use baseimage-docker's init system.
 CMD ["/sbin/my_init"]
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
