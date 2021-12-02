@@ -35,10 +35,9 @@ RUN /var/lib/mvIMPACT_Acquire/install_mvGenTL_Acquire.sh -ogev -u
 
 #----------------------------------------------
 # python SDK
-RUN apt install python3-dev
 RUN apt-get install python3-distutils
 RUN apt-get install python3.8-dev
-RUN apt install libpython3.8-dev
+RUN apt-get install libpython3.8-dev
 RUN nice -n -8 python3 setup.py build
 RUN python3 setup.py install
 #----------------------------------------------
