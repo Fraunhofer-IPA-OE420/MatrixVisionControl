@@ -21,6 +21,10 @@ RUN /usr/sbin/enable_insecure_key
 # after installation it will clean apt packet cache
 RUN apt-get update 
 RUN apt-get -y install build-essential iproute2 
+# python SDK
+RUN apt-get install -y python3-distutils
+RUN apt-get install -y python3.8-dev
+RUN apt-get install -y libpython3.8-dev
 
 #RUN mkdir /var/lib/mvIMPACT_Acquire
 # move the directory mvIMPACT_Acquire with *.tgz and *.sh files to the container
@@ -35,9 +39,6 @@ RUN /var/lib/mvIMPACT_Acquire/install_mvGenTL_Acquire.sh -ogev -u
 
 #----------------------------------------------
 # python SDK
-RUN apt-get install python3-distutils
-RUN apt-get install python3.8-dev
-RUN apt-get install libpython3.8-dev
 RUN nice -n -8 python3 /opt/mvIMPACT_Acquire/LanguageBindings/Python/setup.py build
 RUN python3 /opt/mvIMPACT_Acquire/LanguageBindings/Python/setup.py install
 #----------------------------------------------
