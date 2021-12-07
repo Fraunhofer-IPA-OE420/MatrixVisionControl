@@ -10,6 +10,6 @@
       dockerfile: ./Dockerfile.template
     network_mode: host
     ports:
-        # SSH Port 222 mapped to container 22
-      - 222:22
+        # SSH Port 22 mapped to container 22
+      - 22:22
 
