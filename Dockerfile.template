@@ -12,7 +12,6 @@ ENV container docker
 ENV LC_ALL C
 ENV DEBIAN_FRONTEND noninteractive
 ENV UDEV=on
-ENV AARCH_BALENA_IMAGE=${AARCH_BALENA_IMAGE}
 USER root
 
 #Install 
@@ -21,8 +20,10 @@ RUN pip install -r requirements.txt
 
 # Install SSH - https://github.com/lifeeth/resin-ssh
 RUN install_packages openssh-server gcc build-essential iproute2 
+
 Run echo $AARCH_BALENA_IMAGE
 Run echo ${AARCH_BALENA_IMAGE}
+
 # move the directory mvIMPACT_Acquire with *.tgz and *.sh files to the container
 COPY src/${AARCH_BALENA_IMAGE}/mvIMPACT_Acquire /var/lib/mvIMPACT_Acquire
 
