@@ -23,11 +23,8 @@ RUN pip install -r requirements.txt
 # Install SSH - https://github.com/lifeeth/resin-ssh
 RUN install_packages openssh-server gcc build-essential iproute2 
 
-Run echo $AARCH_BALENA_IMAGE
-Run echo ${AARCH_BALENA_IMAGE}
-
 # move the directory mvIMPACT_Acquire with *.tgz and *.sh files to the container
-ADD src/generic-aarch64/mvIMPACT_Acquire/*.sh  src/generic-aarch64/mvIMPACT_Acquire/*.tar /var/lib/mvIMPACT_Acquire/
+ADD src/generic-aarch64/mvIMPACT_Acquire/*.sh  src/generic-aarch64/mvIMPACT_Acquire/*.tgz /var/lib/mvIMPACT_Acquire/
 
 # execute the setup script in an unattended mode
 RUN cd /var/lib/mvIMPACT_Acquire
