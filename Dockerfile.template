@@ -23,7 +23,7 @@ RUN pip install -r requirements.txt
 RUN install_packages openssh-server gcc build-essential iproute2 
 
 # move the directory mvIMPACT_Acquire with *.tgz and *.sh files to the container
-COPY src/${AARCH_BALENA_IMAGE}/mvIMPACT_Acquire /var/lib/mvIMPACT_Acquire
+COPY src/$AARCH_BALENA_IMAGE/mvIMPACT_Acquire /var/lib/mvIMPACT_Acquire
 
 # execute the setup script in an unattended mode
 RUN cd /var/lib/mvIMPACT_Acquire
