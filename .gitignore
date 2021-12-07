@@ -163,7 +163,7 @@ components/versions/versions.json
 .context
 .npm-packages-offline-cache
 .helm-chart-release
-*.tgz
+#*.tgz
 
 # Symbolic links created by scripts for building docker images
 /.dockerignore
