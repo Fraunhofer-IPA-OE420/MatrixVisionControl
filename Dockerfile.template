@@ -12,13 +12,16 @@ ENV container docker
 ENV LC_ALL C
 ENV DEBIAN_FRONTEND noninteractive
 ENV UDEV=on
-ENV Path=src/generic-aarch64/mvIMPACT_Acquire/*
+ENV Path=src/$AARCH_BALENA_IMAGE/mvIMPACT_Acquire/*
 ENV Path2=src/generic-aarch64/mvIMPACT_Acquire/*.sh
 
 USER root
-# move the directory mvIMPACT_Acquire with *.tgz and *.sh files to the container
+#DEBUG
 Run echo ${Path}
+
+# move the directory mvIMPACT_Acquire with *.tgz and *.sh files to the container
 COPY $Path /var/lib/mvIMPACT_Acquire/
+#DEBUG
 RUN cd /var/lib/mvIMPACT_Acquire
 RUN ls /var/lib/mvIMPACT_Acquire
 
