@@ -1,0 +1,16 @@
+### Example File for Balena / Deploy all containers
+
+ version: "2"
+ services:
+
+ #example to build container out of Repo
+  MatrixVisionbase:
+    build: 
+      context: ./
+      dockerfile: ./Dockerfile.template
+    network_mode: bridge
+    ports:
+        # SSH Port 222 mapped to container 22
+      - 222:22
+        #FastAPi Port
+      - 80:80

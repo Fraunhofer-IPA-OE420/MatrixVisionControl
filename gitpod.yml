@@ -1,0 +1,42 @@
+image:
+  file: .gitpod.Dockerfile
+
+ports:
+  - port: 80
+    onOpen: open-preview
+    visibility: public
+  - port: 8000
+    onOpen: open-preview
+    visibility: public
+  - port: 8001
+    onOpen: open-preview
+    visibility: public
+  - port: 1880
+    onOpen: open-browser
+    visibility: public
+
+tasks:
+#execute file automatically in workspace start  
+  - name: FastApi
+    init: pip3 install -r ./requirements.txt
+    command: |
+     cd ./src
+     uvicorn main:app --reload
+
+# Add ${BALENA_API_TOKEN} in personal Gitpod ENV 
+  - name: Balena
+    command: |
+     cd /usr/bin 
+     sudo ln -s ~/balena-cli/balena balena
+     balena login --token "${BALENA_API_TOKEN}"
+  - name: tailscaled
+    command: |
+      sudo tailscaled
+  - name: tailscale
+    command: |
+      sudo -E tailscale up --hostname "gitpod-${GITPOD_WORKSPACE_ID}" \
+                           --authkey "${TAILSCALE_AUTHKEY}"
+
+experimentalNetwork: true
+
+  

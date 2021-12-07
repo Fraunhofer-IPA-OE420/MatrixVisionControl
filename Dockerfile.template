@@ -1,5 +1,6 @@
-# start with slim version of actual Debian
-FROM phusion/baseimage:master 
+ARG AARCH_BALENA_IMAGE=%%BALENA_MACHINE_NAME%%
+
+FROM balenalib/${AARCH_BALENA_IMAGE}-debian-python
 
 # set environment variables
 ENV TERM linux
@@ -13,21 +14,13 @@ ENV DEBIAN_FRONTEND noninteractive
 
 USER root
 
-#SSH
-RUN rm -f /etc/service/sshd/down
-RUN /etc/my_init.d/00_regen_ssh_host_keys.sh
-RUN /usr/sbin/enable_insecure_key
+#Install 
+COPY ./requirements.txt /requirements.txt
+RUN pip install -r requirements.txt
 
-# update packets and install minimal requirements
-# after installation it will clean apt packet cache
-RUN apt-get update 
-RUN apt-get -y install build-essential iproute2 
-# python SDK
-RUN apt-get install -y python3-distutils
-RUN apt-get install -y python3.8-dev
-RUN apt-get install -y libpython3.8-dev
+# Install SSH - https://github.com/lifeeth/resin-ssh
+RUN install_packages openssh-server gcc build-essential iproute2 
 
-#RUN mkdir /var/lib/mvIMPACT_Acquire
 # move the directory mvIMPACT_Acquire with *.tgz and *.sh files to the container
 COPY mvIMPACT_Acquire/install_mvGenTL_Acquire.sh /var/lib/mvIMPACT_Acquire/install_mvGenTL_Acquire.sh
 COPY mvIMPACT_Acquire/mvGenTL_Acquire-ARM64_gnu-2.45.0.tgz /var/lib/mvIMPACT_Acquire/mvGenTL_Acquire-ARM64_gnu-2.45.0.tgz
@@ -44,6 +37,9 @@ RUN nice -n -8 python3 /opt/mvIMPACT_Acquire/LanguageBindings/Python/setup.py bu
 RUN python3 /opt/mvIMPACT_Acquire/LanguageBindings/Python/setup.py install
 #----------------------------------------------
 
-# Use baseimage-docker's init system.
-CMD ["/sbin/my_init"]
-RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+#Start optional app
+COPY ./start.sh /usr/src/app/start.sh
+COPY ./src /usr/src/app/
+WORKDIR /usr/src/app
+
+CMD ["bash", "start.sh"]
