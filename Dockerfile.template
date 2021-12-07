@@ -19,7 +19,8 @@ USER root
 # move the directory mvIMPACT_Acquire with *.tgz and *.sh files to the container
 Run echo ${Path}
 ADD $Path /var/lib/mvIMPACT_Acquire/
-
+RUN cd /var/lib/mvIMPACT_Acquire
+RUN ls /var/lib/mvIMPACT_Acquire
 
 #Install 
 COPY ./requirements.txt /requirements.txt
