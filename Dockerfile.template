@@ -1,5 +1,5 @@
 ARG AARCH_BALENA_IMAGE=%%BALENA_MACHINE_NAME%%
-ENV Path=src/$AARCH_BALENA_IMAGE/mvIMPACT_Acquire/*
+
 
 FROM balenalib/${AARCH_BALENA_IMAGE}-python
 
@@ -13,11 +13,12 @@ ENV container docker
 ENV LC_ALL C
 ENV DEBIAN_FRONTEND noninteractive
 ENV UDEV=on
+ENV Path=src/generic-aarch64/mvIMPACT_Acquire/*
 
 USER root
+
 #DEBUG
 Run echo ${Path}
-
 # move the directory mvIMPACT_Acquire with *.tgz and *.sh files to the container
 COPY $Path /var/lib/mvIMPACT_Acquire/
 #DEBUG
