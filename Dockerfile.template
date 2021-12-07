@@ -13,12 +13,12 @@ ENV LC_ALL C
 ENV DEBIAN_FRONTEND noninteractive
 ENV UDEV=on
 ENV Path=src/generic-aarch64/mvIMPACT_Acquire/*
-
+ENV Path2=src/generic-aarch64/mvIMPACT_Acquire/*.sh
 
 USER root
 # move the directory mvIMPACT_Acquire with *.tgz and *.sh files to the container
 Run echo ${Path}
-ADD $Path /var/lib/mvIMPACT_Acquire/
+COPY $Path /var/lib/mvIMPACT_Acquire/
 RUN cd /var/lib/mvIMPACT_Acquire
 RUN ls /var/lib/mvIMPACT_Acquire
 
