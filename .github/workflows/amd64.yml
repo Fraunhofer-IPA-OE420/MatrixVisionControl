@@ -4,9 +4,9 @@ name: Generic AMD64
 
 on:
   push:
-    branches: [ balena ]
+    #branches: [ balena ]
   pull_request:
-    branches: [ balena ]
+    #branches: [ balena ]
     
 jobs:
   Build-Generic-AARCH64-Container:
