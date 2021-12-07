@@ -12,6 +12,8 @@ ENV container docker
 ENV LC_ALL C
 ENV DEBIAN_FRONTEND noninteractive
 ENV UDEV=on
+ENV AARCH_BALENA_IMAGE=$AARCH_BALENA_IMAGE
+
 USER root
 
 #Install 
