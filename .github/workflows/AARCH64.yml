@@ -4,9 +4,9 @@ name: Generic AARCH64
 
 on:
   push:
-    branches: [ main ]
+    branches: [ balena ]
   pull_request:
-    branches: [ main ]
+    branches: [ balena ]
     
 jobs:
   Build-Generic-AARCH64-Container:
