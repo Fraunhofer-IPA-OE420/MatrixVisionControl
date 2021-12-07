@@ -9,6 +9,7 @@
       context: ./
       dockerfile: ./Dockerfile.template
     network_mode: host
+    privileged: true
     ports:
         # SSH Port 22 mapped to container 22
       - 22:22
