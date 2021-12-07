@@ -15,11 +15,18 @@ Open a bash and check the following parameters:
 <br>
 Open the sh file and take the following adjustments, according to the results in the bash. The results printed here are from a Raspi3.
 ```
-##Changes IPA
+## Changes IPA
+
 # get target name: type in bash in raspberry host "uname -m"
+# Revpi: armv7l
+# Rasp3: aarch64
 ARM_ARCHITECTUR="aarch64"
-# get kernel version: type in bash in raspberry host "uname -r"
+
+## get kernel version: type in bash in raspberry host "uname -r"
+# RevPI: 4.19.95-rt38-v7
+# Rasp3: "5.10.63-v8+"
 KERNEL_VERSION="5.10.63-v8+"
+
 OS_VERSION="11.1"
 OS_NAME="Debian"
 OS_CODENAME="unknown"
@@ -29,7 +36,7 @@ VERSION="2.45.0"
 The Version of the install file can be found in the file name.
 <br>Comment out the lines above
 ```
-#ARM_ARCHITECTURE="$(uname -m)"
+#ARM_ARCHITECTURE="$(uname -m)" 
 #OS_NAME="unknown"
 #OS_VERSION="unknown"
 #OS_CODENAME="unknown"

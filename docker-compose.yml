@@ -8,9 +8,8 @@
     build: 
       context: ./
       dockerfile: ./Dockerfile.template
-    network_mode: bridge
+    network_mode: host
     ports:
         # SSH Port 222 mapped to container 22
       - 222:22
-        #FastAPi Port
-      - 80:80
+

@@ -11,8 +11,7 @@ echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
 /etc/init.d/ssh start
 
 # Starts application from here
-# Start Rest Server/App
-#...
+#
 
 # wait forever not to exit the container
 while true

@@ -39,7 +39,5 @@ RUN python3 /opt/mvIMPACT_Acquire/LanguageBindings/Python/setup.py install
 
 #Start optional app
 COPY ./start.sh /usr/src/app/start.sh
-COPY ./src /usr/src/app/
 WORKDIR /usr/src/app
-
 CMD ["bash", "start.sh"]
