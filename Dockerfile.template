@@ -27,7 +27,7 @@ Run echo $AARCH_BALENA_IMAGE
 Run echo ${AARCH_BALENA_IMAGE}
 
 # move the directory mvIMPACT_Acquire with *.tgz and *.sh files to the container
-COPY src/generic-aarch64/mvIMPACT_Acquire/ /var/lib/mvIMPACT_Acquire/
+ADD src/generic-aarch64/mvIMPACT_Acquire/ /var/lib/mvIMPACT_Acquire/
 
 # execute the setup script in an unattended mode
 RUN cd /var/lib/mvIMPACT_Acquire
