@@ -1,6 +1,4 @@
 #!/bin/bash
-TARGET=ARM64
-TARGET_UNCAPITALIZED=arm64
 DEF_DIRECTORY=/opt/mvIMPACT_Acquire
 DEF_DATA_DIRECTORY=${MVIMPACT_ACQUIRE_DATA_DIR:-/opt/mvIMPACT_Acquire/data}
 PRODUCT=mvGenTL-Acquire
@@ -25,6 +23,8 @@ APT_GET_EXTRA_PARAMS=
 
 
 ##Changes IPA
+TARGET=ARM64
+TARGET_UNCAPITALIZED=arm64
 # get target name: type in bash in raspberry host "uname -m"
 ARM_ARCHITECTURE="aarch64"
 # get kernel version: type in bash in raspberry host "uname -r"
