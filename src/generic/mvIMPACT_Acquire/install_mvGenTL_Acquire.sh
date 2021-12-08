@@ -26,15 +26,15 @@ APT_GET_EXTRA_PARAMS=
 
 ##Changes IPA
 # get target name: type in bash in raspberry host "uname -m"
-ARM_ARCHITECTUR="aarch64"
+ARM_ARCHITECTUR="armv7l"
 # get kernel version: type in bash in raspberry host "uname -r"
-KERNEL_VERSION="5.10.63-v8+"
-# get kernel version: type in bash in raspberry host "lsb_release -a"
-OS_VERSION="11.1"
-# get kernel version: type in bash in raspberry host "lsb_release -a"
-OS_NAME="Debian"
+KERNEL_VERSION="4.19.95-rt38-v7"
+# get kernel version: type in bash in raspberry host "cat /etc/os-release"
+OS_VERSION="2.80.3+rev1"
+# get kernel version: type in bash in raspberry host "cat /etc/os-release"
+OS_NAME="balenaOS"
 OS_CODENAME="unknown"
-VERSION="2.45.0"
+VERSION="2.80.3"
 ######
 
 
