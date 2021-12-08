@@ -1,6 +1,6 @@
 #!/bin/bash
-TARGET=ARMhf
-TARGET_UNCAPITALIZED=armhf
+TARGET=ARM64
+TARGET_UNCAPITALIZED=arm64
 DEF_DIRECTORY=/opt/mvIMPACT_Acquire
 DEF_DATA_DIRECTORY=${MVIMPACT_ACQUIRE_DATA_DIR:-/opt/mvIMPACT_Acquire/data}
 PRODUCT=mvGenTL-Acquire
@@ -12,7 +12,7 @@ GEV_SUPPORT=undefined
 U3V_SUPPORT=undefined
 PCIE_SUPPORT=undefined
 USE_DEFAULTS=NO
-UNATTENDED_INSTALLATION=NO
+UNATTENDED_INSTALLATION=YES
 MINIMAL_INSTALLATION=NO
 APT_GET_EXTRA_PARAMS=
 #ARM_ARCHITECTURE="$(uname -m)"
@@ -22,22 +22,18 @@ APT_GET_EXTRA_PARAMS=
 #KERNEL_VERSION="unknown"
 #JETSON_KERNEL=""
 
-
-
 ##Changes IPA
 # get target name: type in bash in raspberry host "uname -m"
 ARM_ARCHITECTUR="armv7l"
 # get kernel version: type in bash in raspberry host "uname -r"
 KERNEL_VERSION="4.19.95-rt38-v7"
 # get kernel version: type in bash in raspberry host "lsb_release -a"
-OS_VERSION="2.80.3+rev1"
+OS_VERSION="unknown"
 # get kernel version: type in bash in raspberry host "lsb_release -a"
-OS_NAME="unknown"
+OS_NAME="Debian"
 OS_CODENAME="unknown"
 VERSION="unknown"
 ######
-
-
 
 # Define a variable for the ErrorCount and WarningCount and an array for both to summarize the kind of issue
 let ERROR_NUMBER=0
@@ -79,28 +75,29 @@ INIT_SYSTEM=$(ps --no-headers -o comm 1)
 # Determine OS Name, version and Kernel version
 function check_distro_and_version()
 {
-  if [ -f /etc/fedora-release ] ; then
-    OS_NAME='Fedora'
-    OS_VERSION=`cat /etc/redhat-release | sed s/.*release\ // | sed s/\ .*//`
-  elif [ -f /etc/redhat-release ] ; then
-    OS_NAME='RedHat'
-    OS_VERSION=`cat /etc/redhat-release | sed s/.*release\ // | sed s/\ .*//`
-  elif [ -f /etc/SuSE-release ] ; then
-    OS_NAME='SuSE'
-    OS_VERSION=`cat /etc/SuSE-release | tr "\n" ' ' | sed s/.*=\ //`
-  elif [ -f /etc/mandrake-release ] ; then
-    OS_NAME='Mandrake'
-    OS_VERSION=`cat /etc/mandrake-release | sed s/.*release\ // | sed s/\ .*//`
-  elif [ -x /usr/bin/lsb_release ] ; then
-    OS_NAME="$(lsb_release -is)" #Ubuntu
-    OS_VERSION="$(lsb_release -rs)"
-    OS_CODENAME="$(lsb_release -cs)"
-  elif [ -f /etc/debian_version ] ; then
-    OS_NAME="Debian"
-    OS_VERSION="$(cat /etc/debian_version)"
-  fi
-  KERNEL_VERSION=$(uname -r)
-  JETSON_KERNEL=$(uname -r | grep tegra)
+  echo "determine OS Name, version and Kernel version done in constant"
+  #if [ -f /etc/fedora-release ] ; then
+   # OS_NAME='Fedora'
+   # OS_VERSION=`cat /etc/redhat-release | sed s/.*release\ // | sed s/\ .*//`
+  #elif [ -f /etc/redhat-release ] ; then
+  # OS_NAME='RedHat'
+  #  OS_VERSION=`cat /etc/redhat-release | sed s/.*release\ // | sed s/\ .*//`
+  #elif [ -f /etc/SuSE-release ] ; then
+   # OS_NAME='SuSE'
+   # OS_VERSION=`cat /etc/SuSE-release | tr "\n" ' ' | sed s/.*=\ //`
+  #elif [ -f /etc/mandrake-release ] ; then
+  #  OS_NAME='Mandrake'
+  #  OS_VERSION=`cat /etc/mandrake-release | sed s/.*release\ // | sed s/\ .*//`
+  #elif [ -x /usr/bin/lsb_release ] ; then
+  #  OS_NAME="$(lsb_release -is)" #Ubuntu
+  #  OS_VERSION="$(lsb_release -rs)"
+  #  OS_CODENAME="$(lsb_release -cs)"
+  #elif [ -f /etc/debian_version ] ; then
+  #  OS_NAME="Debian"
+  #  OS_VERSION="$(cat /etc/debian_version)"
+  #fi
+  #KERNEL_VERSION=$(uname -r)
+  #JETSON_KERNEL=$(uname -r | grep tegra)
 }    
 
 function createSoftlink {
@@ -372,6 +369,8 @@ fi
 # A quick check whether the Version has a correct format (due to other files being in the same directory..?)
 if [ "$(echo $VERSION | grep -c '^[0-9]\{1,2\}\.[0-9]\{1,2\}\.[0-9]\{1,2\}')" == "0" ]; then
   echo "-----------------------------------------------------------------------------------"
+  echo $TARGET
+  echo $VERSION
   echo "${red}  ABORTING: Script could not determine a valid mvIMPACT Acquire *.tgz file!  " 
   echo "${reset}-----------------------------------------------------------------------------------"
   echo "  This script could not extract a valid version number from the *.tgz file"
@@ -501,7 +500,6 @@ if [ "$MVIMPACT_ACQUIRE_DIR" != "" ]; then
   echo "Do you want to keep this installation (default is 'yes')?"
   echo "If you select no, mvIMPACT Acquire will be removed for ALL installed products!"
   echo "Hit 'n' + <Enter> for 'no', or just <Enter> for 'yes'."
-  "$USE_DEFAULTS" = "NO" #change IPA
   if [ "$USE_DEFAULTS" == "NO" ] ; then
     read YES_NO
   else
@@ -1520,7 +1518,7 @@ WantedBy=multi-user.target
         echo "-----------------------------------------------------------------------------------"
      fi
   fi
-  
+
   # Check whether the USBFS Memory is configured
   if [ "$U3V_SUPPORT" == "TRUE" ]; then
   ERROR=0
@@ -1608,3 +1606,5 @@ if [ "$YES_NO" == "n" ] || [ "$YES_NO" == "N" ]; then
 else
    $SUDO shutdown -r now
 fi
+
+
