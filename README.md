@@ -1,7 +1,7 @@
 # MatrixVisionControl
 automatic control of the matrixVision Camera mvBlueCOUGAR-XT
 
-[![Generic AARCH64](https://github.com/Fraunhofer-IPA-OE420/MatrixVisionControl/actions/workflows/generic-aarch64.yml/badge.svg)](https://github.com/Fraunhofer-IPA-OE420/MatrixVisionControl/actions/workflows/generic-aarch64.yml)
+[![Generic AARCH64](https://github.com/Fraunhofer-IPA-OE420/MatrixVisionControl/actions/workflows/generic-aarch64.yml/badge.svg)](https://github.com/Fraunhofer-IPA-OE420/MatrixVisionControl/actions/workflows/generic-aarch64.yml) [![Generic](https://github.com/Fraunhofer-IPA-OE420/MatrixVisionControl/actions/workflows/generic.yml/badge.svg)](https://github.com/Fraunhofer-IPA-OE420/MatrixVisionControl/actions/workflows/generic.yml)
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/Fraunhofer-IPA-OE420/MatrixVisionControl/tree/balena)
 
