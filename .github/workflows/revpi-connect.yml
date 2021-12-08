@@ -1,4 +1,4 @@
-name: Generic
+name: revpi-connect
 ##### https://www.balena.io/docs/reference/base-images/base-images-ref/####
 
 
@@ -12,4 +12,4 @@ jobs:
   Build-Generic-ARM32-Container:
     uses: fraunhofer-ipa-oe420/github-templates/.github/workflows/balenaimg_gitrepo.yml@main
     with:
-      aarch_version: generic
+      aarch_version: revpi-connect

@@ -13,7 +13,7 @@ ENV container docker
 ENV LC_ALL C
 ENV DEBIAN_FRONTEND noninteractive
 ENV UDEV=on
-ENV Path=src/generic/mvIMPACT_Acquire/*
+ENV Path=src/revpi-connect/mvIMPACT_Acquire/*
 
 USER root
 
