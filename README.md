@@ -1,7 +1,7 @@
 # MatrixVisionControl
 automatic control of the matrixVision Camera mvBlueCOUGAR-XT
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/Fraunhofer-IPA-OE420/Puryfill)
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/Fraunhofer-IPA-OE420/MatrixVisionControl/tree/balena)
 
 # Install Docker Container
 Download install files for ARM from webpage and store them in a folder named mvIMPACT_Acquire. Create a Dockerfile and be sure that it is optimzed on a ARM device.
