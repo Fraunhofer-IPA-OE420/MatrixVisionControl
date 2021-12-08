@@ -24,7 +24,7 @@ APT_GET_EXTRA_PARAMS=
 
 ##Changes IPA
 # get target name: type in bash in raspberry host "uname -m"
-ARM_ARCHITECTUR="armv7l"
+ARM_ARCHITECTURE="ARMhf"
 # get kernel version: type in bash in raspberry host "uname -r"
 KERNEL_VERSION="4.19.95-rt38-v7"
 # get kernel version: type in bash in raspberry host "lsb_release -a"
