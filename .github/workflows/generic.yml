@@ -1,15 +1,15 @@
-name: Generic AARCH64
+name: Generic
 ##### https://www.balena.io/docs/reference/base-images/base-images-ref/####
 
 
 on:
   push:
-    branches: [ balena_ ]
+    branches: [ balena ]
   pull_request:
-    branches: [ balena_ ]
+    branches: [ balena ]
     
 jobs:
   Build-Generic-AARCH64-Container:
     uses: fraunhofer-ipa-oe420/github-templates/.github/workflows/balenaimg_gitrepo.yml@main
     with:
-      aarch_version: generic-aarch64
+      aarch_version: generic
