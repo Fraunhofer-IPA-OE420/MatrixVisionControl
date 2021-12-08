@@ -38,7 +38,6 @@ VERSION="2.80.3"
 ######
 
 
-
 # Define a variable for the ErrorCount and WarningCount and an array for both to summarize the kind of issue
 let ERROR_NUMBER=0
 let WARNING_NUMBER=0
@@ -501,7 +500,7 @@ if [ "$MVIMPACT_ACQUIRE_DIR" != "" ]; then
   echo "Do you want to keep this installation (default is 'yes')?"
   echo "If you select no, mvIMPACT Acquire will be removed for ALL installed products!"
   echo "Hit 'n' + <Enter> for 'no', or just <Enter> for 'yes'."
-  "$USE_DEFAULTS" = "NO" #change IPA
+  
   if [ "$USE_DEFAULTS" == "NO" ] ; then
     read YES_NO
   else
