@@ -15,12 +15,29 @@ USE_DEFAULTS=NO
 UNATTENDED_INSTALLATION=NO
 MINIMAL_INSTALLATION=NO
 APT_GET_EXTRA_PARAMS=
-ARM_ARCHITECTURE="$(uname -m)"
-OS_NAME="unknown"
-OS_VERSION="unknown"
+#ARM_ARCHITECTURE="$(uname -m)"
+#OS_NAME="unknown"
+#OS_VERSION="unknown"
+#OS_CODENAME="unknown"
+#KERNEL_VERSION="unknown"
+#JETSON_KERNEL=""
+
+
+
+##Changes IPA
+# get target name: type in bash in raspberry host "uname -m"
+ARM_ARCHITECTUR="armv7l"
+# get kernel version: type in bash in raspberry host "uname -r"
+KERNEL_VERSION="4.19.95-rt38-v7"
+# get kernel version: type in bash in raspberry host "lsb_release -a"
+OS_VERSION="2.80.3+rev1"
+# get kernel version: type in bash in raspberry host "lsb_release -a"
+OS_NAME="balenaOS"
 OS_CODENAME="unknown"
-KERNEL_VERSION="unknown"
-JETSON_KERNEL=""
+VERSION="2.80.3"
+######
+
+
 
 # Define a variable for the ErrorCount and WarningCount and an array for both to summarize the kind of issue
 let ERROR_NUMBER=0
