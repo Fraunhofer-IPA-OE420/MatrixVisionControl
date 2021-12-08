@@ -31,7 +31,7 @@ RUN install_packages openssh-server gcc build-essential iproute2
 # execute the setup script in an unattended mode
 RUN cd /var/lib/mvIMPACT_Acquire
 RUN ls /var/lib/mvIMPACT_Acquire
-RUN chmod a+x /var/lib/mvIMPACT_Acquire/install_mvGenTL_Acquire.sh
+RUN chmod a+x /var/lib/mvIMPACT_Acquire/install_mvGenTL_Acquire_ARM.sh
 RUN /var/lib/mvIMPACT_Acquire/install_mvGenTL_Acquire.sh -ogev -u 
 
 #----------------------------------------------
