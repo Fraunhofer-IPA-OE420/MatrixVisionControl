@@ -498,15 +498,15 @@ echo
 # First of all ask whether to dispose of the old mvIMPACT Acquire installation
 if [ "$MVIMPACT_ACQUIRE_DIR" != "" ]; then
   echo "Existing installation detected at: $MVIMPACT_ACQUIRE_DIR"
-  #echo "Do you want to keep this installation (default is 'yes')?"
-  #echo "If you select no, mvIMPACT Acquire will be removed for ALL installed products!"
-  #echo "Hit 'n' + <Enter> for 'no', or just <Enter> for 'yes'."
-  #if [ "$USE_DEFAULTS" == "NO" ] ; then
-  #  read YES_NO
-  #else
-  #  YES_NO=""
-  #fi
-  YES_NO =  "n" #changes IPA
+  echo "Do you want to keep this installation (default is 'yes')?"
+  echo "If you select no, mvIMPACT Acquire will be removed for ALL installed products!"
+  echo "Hit 'n' + <Enter> for 'no', or just <Enter> for 'yes'."
+  "$USE_DEFAULTS" = "NO" #change IPA
+  if [ "$USE_DEFAULTS" == "NO" ] ; then
+    read YES_NO
+  else
+    YES_NO=""
+  fi
   echo
   if [ "$YES_NO" == "n" ] || [ "$YES_NO" == "N" ]; then
     $SUDO rm -f /usr/bin/mvDeviceConfigure >/dev/null 2>&1
