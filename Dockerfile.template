@@ -35,8 +35,8 @@ RUN /var/lib/mvIMPACT_Acquire/install_mvGenTL_Acquire.sh -ogev -u
 
 #----------------------------------------------
 # python SDK
-RUN nice -n -8 python3 /opt/mvIMPACT_Acquire/LanguageBindings/Python/setup.py build
-RUN python3 /opt/mvIMPACT_Acquire/LanguageBindings/Python/setup.py install
+#RUN nice -n -8 python3 /opt/mvIMPACT_Acquire/LanguageBindings/Python/setup.py build
+#RUN python3 /opt/mvIMPACT_Acquire/LanguageBindings/Python/setup.py install
 #----------------------------------------------
 
 #Start optional app
