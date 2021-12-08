@@ -1,6 +1,5 @@
 #!/bin/bash
-TARGET=ARMhf
-TARGET_UNCAPITALIZED=armhf
+
 DEF_DIRECTORY=/opt/mvIMPACT_Acquire
 DEF_DATA_DIRECTORY=${MVIMPACT_ACQUIRE_DATA_DIR:-/opt/mvIMPACT_Acquire/data}
 PRODUCT=mvGenTL-Acquire
@@ -23,6 +22,9 @@ APT_GET_EXTRA_PARAMS=
 #JETSON_KERNEL=""
 
 ##Changes IPA
+TARGET=ARMhf
+TARGET_UNCAPITALIZED=armhf
+TARGET_POINTER_LENGTH=32
 # get target name: type in bash in raspberry host "uname -m"
 ARM_ARCHITECTURE="ARMhf"
 # get kernel version: type in bash in raspberry host "uname -r"
@@ -367,18 +369,18 @@ if [ "$( ls | grep -c 'mvGenTL_Acquire.*\.tgz' )" != "0" ] ; then
 fi
 
 # A quick check whether the Version has a correct format (due to other files being in the same directory..?)
-#if [ "$(echo $VERSION | grep -c '^[0-9]\{1,2\}\.[0-9]\{1,2\}\.[0-9]\{1,2\}')" == "0" ]; then
-#  echo "-----------------------------------------------------------------------------------"
-#  echo $TARGET
-#  echo $VERSION
-#  echo "${red}  ABORTING: Script could not determine a valid mvIMPACT Acquire *.tgz file!  " 
-#  echo "${reset}-----------------------------------------------------------------------------------"
-#  echo "  This script could not extract a valid version number from the *.tgz file"
-#  echo "  This script determined $TARFILE as the file containing the installation data."
-#  echo "  It is recommended that only this script and the correct *.tgz file reside in this directory."
-#  echo "  Please remove all other files and try again."
-#  exit
-#fi
+if [ "$(echo $VERSION | grep -c '^[0-9]\{1,2\}\.[0-9]\{1,2\}\.[0-9]\{1,2\}')" == "0" ]; then
+  echo "-----------------------------------------------------------------------------------"
+  echo $TARGET
+  echo $VERSION
+  echo "${red}  ABORTING: Script could not determine a valid mvIMPACT Acquire *.tgz file!  " 
+  echo "${reset}-----------------------------------------------------------------------------------"
+  echo "  This script could not extract a valid version number from the *.tgz file"
+  echo "  This script determined $TARFILE as the file containing the installation data."
+  echo "  It is recommended that only this script and the correct *.tgz file reside in this directory."
+  echo "  Please remove all other files and try again."
+  exit
+fi
 
 # A quick check whether the user has been determined
 if [ "$USER" == "" ]; then
