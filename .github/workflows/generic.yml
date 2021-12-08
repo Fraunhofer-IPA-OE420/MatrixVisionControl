@@ -9,7 +9,7 @@ on:
     branches: [ balena ]
     
 jobs:
-  Build-Generic-AARCH64-Container:
+  Build-Generic-ARM32-Container:
     uses: fraunhofer-ipa-oe420/github-templates/.github/workflows/balenaimg_gitrepo.yml@main
     with:
       aarch_version: generic
