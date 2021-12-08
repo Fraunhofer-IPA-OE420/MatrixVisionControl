@@ -32,9 +32,9 @@ KERNEL_VERSION="4.19.95-rt38-v7"
 # get kernel version: type in bash in raspberry host "lsb_release -a"
 OS_VERSION="2.80.3+rev1"
 # get kernel version: type in bash in raspberry host "lsb_release -a"
-OS_NAME="balenaOS"
+OS_NAME="unknown"
 OS_CODENAME="unknown"
-VERSION="2.80.3"
+VERSION="unknown"
 ######
 
 
