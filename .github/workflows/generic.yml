@@ -4,9 +4,9 @@ name: Generic
 
 on:
   push:
-    branches: [ balena ]
+    branches: [ balena_jcj ]
   pull_request:
-    branches: [ balena ]
+    branches: [ balena_jcj ]
     
 jobs:
   Build-Generic-ARM32-Container:
