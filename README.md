@@ -1,6 +1,8 @@
 # MatrixVisionControl
 automatic control of the matrixVision Camera mvBlueCOUGAR-XT
 
+[![Generic AARCH64](https://github.com/Fraunhofer-IPA-OE420/MatrixVisionControl/actions/workflows/generic-aarch64.yml/badge.svg)](https://github.com/Fraunhofer-IPA-OE420/MatrixVisionControl/actions/workflows/generic-aarch64.yml)
+
 #Install Docker Container
 Download install files for ARM from webpage and store them in a folder named mvIMPACT_Acquire. Create a Dockerfile and be sure that it is optimzed on a ARM device.
 <br>
