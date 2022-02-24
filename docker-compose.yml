@@ -10,7 +10,12 @@
       dockerfile: ./Dockerfile.template
     network_mode: host
     privileged: true
+    restart: always
+    expose:
+      - 22
     ports:
         # SSH Port 22 mapped to container 22
       - 22:22
+    volumes:
+       - /media/pi/TO\ 1705-913/mvImages:/media
 
