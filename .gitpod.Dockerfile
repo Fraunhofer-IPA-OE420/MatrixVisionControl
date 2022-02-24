@@ -1,7 +1,7 @@
 FROM gitpod/workspace-full
 USER root
 
-COPY requirements.txt .
+#COPY requirements.txt .
 
 RUN apt-get update
 RUN apt-get install -y python-dev
