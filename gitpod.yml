@@ -1,6 +1,5 @@
 image:
   file: .gitpod.Dockerfile
-
 ports:
   - port: 80
     onOpen: open-preview
@@ -22,7 +21,6 @@ tasks:
     command: |
      cd ./src
      uvicorn main:app --reload
-
 # Add ${BALENA_API_TOKEN} in personal Gitpod ENV 
   - name: Balena
     command: |
@@ -36,7 +34,4 @@ tasks:
     command: |
       sudo -E tailscale up --hostname "gitpod-${GITPOD_WORKSPACE_ID}" \
                            --authkey "${TAILSCALE_AUTHKEY}"
-
 experimentalNetwork: true
-
-  
