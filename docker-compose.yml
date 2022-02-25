@@ -13,9 +13,10 @@
     restart: always
     expose:
       - 22
-    ports:
-        # SSH Port 22 mapped to container 22
-      - 22:22
-    volumes:
-       - /media/pi/TO\ 1705-913/mvImages:/media
+    #ports:
+    #    # SSH Port 22 mapped to container 22
+    #  - 22:22
 
+    #volumes:
+    #  #volume on the external storage
+    #   - /media/pi/TO\ 1705-913/mvImages:/media
