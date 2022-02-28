@@ -1,0 +1,14 @@
+name: Generic AMD64
+
+on:
+  push:
+    branches: [ balena ]
+  pull_request:
+    branches: [ balena ]
+
+jobs:
+
+  Build-Generic-AMD64-Container:
+    uses: fraunhofer-ipa-oe420/github-templates/.github/workflows/balenaimg_gitrepo.yml@main
+    with:
+      aarch_version: generic
